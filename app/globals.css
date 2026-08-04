@@ -303,12 +303,14 @@ body {
      changing scale, never by reflowing — the line breaks are part of the
      picture, and a page that rewraps is a screenshot of a different page.
 
-     `--fit` is the scale at which it exactly fills the column, so the sheet is
-     always the largest it can be without touching the gutters, capped at a size
-     that stays a picture rather than becoming the interface. Stepping this at
-     breakpoints left it overflowing at 320px and undersized at 900. */
-  --fit: calc((100vw - 2 * var(--gutter)) / 600);
-  --page-scale: min(0.78, var(--fit));
+     `--page-scale` MUST stay unitless: it is multiplied by 600px below and fed
+     to `transform: scale()`. Deriving it fluidly from the viewport is the
+     obvious idea and it does not work — `calc(100vw / 600)` divides a length by
+     a number and yields a *length*, so the width became px² and the whole
+     declaration was dropped, collapsing the sheet. CSS has no length-to-number
+     division with real support. Hence discrete steps, each chosen so the sheet
+     clears the gutters at the narrow end of its range. */
+  --page-scale: 0.78; /* 468px wide, fits from 560px up */
   --page-h: min(72vh, 660px);
   position: relative;
   display: flex;
@@ -317,13 +319,26 @@ body {
 }
 @media (min-width: 1024px) {
   .nt-desk {
-    --page-scale: min(0.9, var(--fit));
+    --page-scale: 0.9; /* 540px in a 921px column */
     --page-h: min(76vh, 760px);
   }
 }
 @media (max-width: 560px) {
   .nt-desk {
+    --page-scale: 0.66; /* 396px, clears the 432px column at 480 */
     --page-h: min(68vh, 560px);
+  }
+}
+@media (max-width: 430px) {
+  .nt-desk {
+    --page-scale: 0.52; /* 312px, clears the 335px column at 375 */
+    --page-h: min(64vh, 460px);
+  }
+}
+@media (max-width: 340px) {
+  .nt-desk {
+    --page-scale: 0.44; /* 264px, clears the 280px column at 320 */
+    --page-h: min(60vh, 400px);
   }
 }
 .nt-desk-back {
@@ -720,11 +735,17 @@ body {
   margin-inline: 8px;
   background: var(--paper-border);
 }
+/* The box is centred by the bar, but the label has to be centred inside the
+   box too. In the app this is a <button>, which centres its own text; here it
+   is a span, which parks it on the baseline at the top of a 24px item. */
 .nt-reviewbar-act {
+  display: inline-flex;
+  align-items: center;
   height: 24px;
   padding-inline: 9px;
   border-radius: 999px;
   font-size: 12px;
+  line-height: 1;
   color: var(--ink);
   white-space: nowrap;
 }
