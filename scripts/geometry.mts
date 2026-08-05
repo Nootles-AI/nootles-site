@@ -149,6 +149,14 @@ function checkAudience(a: Audience) {
   if (a.headline.length > 46) {
     fail(where, `headline is ${a.headline.length} chars — it will overflow`);
   }
+  /* The headlines are a system, not eight separate lines: one verb changes and
+     the rest holds. Checked because the value of a repeated frame is entirely
+     in it being repeated, and a single page quietly opting out reads as an
+     oversight rather than as variety. Changing the frame is a fine thing to do
+     — but do it here, on purpose, and to all eight at once. */
+  if (!/^[A-Z][a-z]+ with pure momentum\.$/.test(a.headline)) {
+    fail(where, `headline "${a.headline}" breaks the "<Verb> with pure momentum." frame`);
+  }
   if (a.sub.length > 170) {
     fail(where, `lede is ${a.sub.length} chars — too long for the fold`);
   }

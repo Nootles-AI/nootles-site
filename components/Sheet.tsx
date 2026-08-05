@@ -49,7 +49,7 @@ function renderBlock(block: Block, i: number, id: string) {
       );
     case "text":
       return (
-        <p key={i} className="nt-doc-text">
+        <p key={i} className={block.streaming ? "nt-doc-text is-streaming" : "nt-doc-text"}>
           {block.text}
           {block.streaming ? <span className="nt-stream-head" /> : null}
         </p>
@@ -91,7 +91,10 @@ function renderBlock(block: Block, i: number, id: string) {
       return <MathView key={i} expr={block.expr} result={block.result} />;
     case "code":
       return (
-        <div key={i} className="nt-doc-code">
+        <div
+          key={i}
+          className={block.streaming ? "nt-doc-code is-streaming" : "nt-doc-code"}
+        >
           <div className="nt-code-head">
             <span className="nt-meta nt-stamp">{block.lang}</span>
           </div>

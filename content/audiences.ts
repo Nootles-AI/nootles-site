@@ -29,7 +29,7 @@ export const baseline: Audience = {
   slug: "",
   label: "General",
   makes: "Anything you have to think about first",
-  headline: "Pure momentum.",
+  headline: "Write with pure momentum.",
   sub: "Prose, diagrams, code, maths and tables in one document — and an AI that reads and edits all of it, in front of you.",
   doc: {
     alt: "A page weighing two ways to build the same thing: the decision drawn as a diagram, then the same two options ruled up as a table underneath it.",
@@ -78,8 +78,8 @@ export const audiences: Audience[] = [
     slug: "engineering",
     label: "Engineering",
     makes: "RFCs, architecture, incident notes",
-    headline: "The design doc, and the design.",
-    sub: "Write the argument, draw the system, and keep the handler that implements it on the same page. The model reads all three.",
+    headline: "Draft with pure momentum.",
+    sub: "The design doc and the design, on one page. Write the argument, draw the system, keep the handler beside it — and the model reads all three.",
     doc: {
       alt: "An ingestion design: a paragraph of reasoning, the retry rule as real TypeScript, then the services and the dead-letter path drawn beneath both.",
       blocks: [
@@ -133,8 +133,8 @@ export const audiences: Audience[] = [
     slug: "product",
     label: "Product",
     makes: "Specs, flows, roadmaps",
-    headline: "The spec and the flow can't drift apart.",
-    sub: "They are the same page. Change the paragraph and the drawing is right there to change with it, with the numbers ruled up underneath.",
+    headline: "Plan with pure momentum.",
+    sub: "The spec and the flow can't drift apart, because they are the same page. Change the paragraph and the drawing is right there to change with it.",
     doc: {
       alt: "A checkout spec: the happy path and the saved-card shortcut drawn out, then a table showing which of the two most orders actually take.",
       blocks: [
@@ -187,8 +187,8 @@ export const audiences: Audience[] = [
     slug: "business",
     label: "Business",
     makes: "Memos, process, planning",
-    headline: "Memos that show their working.",
-    sub: "The argument, the numbers it rests on, and the chart drawn straight from them — so nobody has to take the conclusion on trust.",
+    headline: "Decide with pure momentum.",
+    sub: "Memos that show their working: the argument, the numbers it rests on, and the chart drawn straight from them. Nobody takes the conclusion on trust.",
     doc: {
       alt: "A territory memo: close rates plotted by segment with the failing one filled in, then the same figures ruled up as a table beneath the chart.",
       blocks: [
@@ -236,8 +236,8 @@ export const audiences: Audience[] = [
     slug: "design",
     label: "Design",
     makes: "Rationale, flows, wireframes",
-    headline: "Rationale you can point at.",
-    sub: "The reasoning beside the flow it argues for, and neither one a screenshot of the other. Move a step and the sentence is right there.",
+    headline: "Sketch with pure momentum.",
+    sub: "Rationale you can point at. The reasoning sits beside the flow it argues for, and neither one is a screenshot of the other.",
     doc: {
       alt: "An onboarding flow with the skip path drawn beneath it, followed by the three decisions the second pass settled, ticked off as they land.",
       blocks: [
@@ -287,8 +287,8 @@ export const audiences: Audience[] = [
     slug: "making",
     label: "Making",
     makes: "Cut lists, joinery, shop drawings",
-    headline: "Work it out before you cut.",
-    sub: "The arithmetic, the cut list and the joinery on one page — worked out where you can check it, and it comes to the bench with you.",
+    headline: "Build with pure momentum.",
+    sub: "Work it out before you cut. The arithmetic, the cut list and the joinery on one page — and the page comes out to the bench with you.",
     doc: {
       alt: "A bench plan: the board count worked out as a fraction and evaluated, the cut list ruled up beneath it, then the joinery drawn out.",
       blocks: [
@@ -343,8 +343,8 @@ export const audiences: Audience[] = [
     slug: "film",
     label: "Film",
     makes: "Beats, blocking, shot order",
-    headline: "See the sequence before you shoot it.",
-    sub: "The beat written out, the shot list ruled up, and the order drawn — so moving a setup doesn't mean renumbering four other things by hand.",
+    headline: "Block with pure momentum.",
+    sub: "See the sequence before you shoot it. The beat written out, the shot list ruled up, and the order drawn beside both.",
     doc: {
       alt: "A scene breakdown: the note about where the tension sits, the shot list as a table, then the order drawn with an insert hanging off the close-up.",
       blocks: [
@@ -398,8 +398,8 @@ export const audiences: Audience[] = [
     slug: "study",
     label: "Study",
     makes: "Essay plans, revision, notes",
-    headline: "Think the argument all the way through.",
-    sub: "The plan, the figure you have to be able to justify, and the causal chain you'll be asked to reproduce — on one page you can revise from.",
+    headline: "Revise with pure momentum.",
+    sub: "Think the argument all the way through: the plan, the figure you have to justify, and the causal chain you'll be asked to reproduce.",
     doc: {
       alt: "An essay plan: the causal chain drawn out from reparations to collapse, with the collapse filled in, and the currency figure worked out underneath.",
       blocks: [

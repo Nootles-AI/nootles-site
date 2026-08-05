@@ -269,10 +269,16 @@ body {
   gap: clamp(40px, 5vw, 80px);
 }
 
+/* Every headline on the site is "<verb> with pure momentum." — one word moves
+   and the rest holds. The ceiling is set so the longest word in that sentence,
+   "momentum.", clears the claim column with room to spare at every width: the
+   column is about 480px once the sheet has taken its 600, and nine characters
+   at 78px do not come close to filling it. A headline that overflows on one
+   route would be a headline that overflows on all eight. */
 .nt-h1 {
   margin: 0;
-  max-width: 9ch;
-  font-size: clamp(3rem, 6.4vw, 5.25rem);
+  max-width: 12ch;
+  font-size: clamp(2.75rem, 5.4vw, 4.875rem);
   font-weight: 700;
   line-height: 0.96;
   letter-spacing: -0.035em;
@@ -1091,13 +1097,22 @@ body {
   gap: clamp(14px, 2vw, 24px);
   padding: clamp(15px, 1.8vw, 20px) clamp(8px, 1.2vw, 14px);
   border-bottom: 1px solid var(--rule);
-  transition:
-    background var(--dur) var(--ease),
-    padding-left var(--dur) var(--ease);
+  transition: background var(--dur) var(--ease);
 }
 .nt-index-row:hover {
   background: var(--sheet);
-  padding-left: clamp(16px, 2.2vw, 26px);
+}
+/* The row leans toward you rather than being re-padded. Animating padding would
+   put a layout pass on every frame of a hover, and shifting the row itself
+   would take its bottom rule out of line with the others. Moving the two text
+   children is the only version of this that costs nothing and stays square. */
+.nt-index-label,
+.nt-index-makes {
+  transition: transform var(--dur) var(--ease);
+}
+.nt-index-row:hover .nt-index-label,
+.nt-index-row:hover .nt-index-makes {
+  transform: translateX(5px);
 }
 .nt-index-no {
   flex: none;
@@ -1203,11 +1218,53 @@ body {
 }
 
 /* ---- Assembly -----------------------------------------------------------
-   Each block of the document arrives a beat after the one above it, which reads
-   as the page being written rather than as a picture being revealed. That
-   difference is the whole reason for doing it. Auto-playing, never gated on a
-   scroll position or a class — a reveal that waits for an event it may never
-   get ships blank. */
+   One orchestrated entrance for the fold, and nothing anywhere else. It runs in
+   the order a drawing is actually made:
+
+     0ms     the claim rises, line by line
+     60ms    the sheet is laid on the paper, wiped in from the top
+     440ms   the document assembles, one block at a time
+     900ms   the dimension runs are drawn out from their start ticks
+     1150ms  the model adds a line to the finished page
+
+   That last beat is the whole argument as timing. Everything above it is the
+   page you wrote; the line that arrives afterwards, on its own, with the amber
+   caret still going, is the part you didn't.
+
+   All of it auto-plays. Nothing here is gated on a scroll position or a class:
+   a reveal that waits for an event it may never get ships blank, and the
+   fade-up-on-scroll applied to every section below the fold is the single most
+   recognisable tell in the genre. The sections down the page simply exist. */
+
+/* The claim, first and only once. */
+.nt-hero-say > * {
+  animation: nt-rise var(--dur-slow) var(--ease) backwards;
+}
+.nt-hero-say > :nth-child(1) { animation-delay: 0ms; }
+.nt-hero-say > :nth-child(2) { animation-delay: 60ms; }
+.nt-hero-say > :nth-child(3) { animation-delay: 120ms; }
+.nt-hero-say > :nth-child(4) { animation-delay: 180ms; }
+@keyframes nt-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* The sheet is laid down before anything is written on it — wiped in from the
+   top edge, the way a page comes off a plotter. `clip-path` only exists inside
+   the keyframe, so once it has run the sheet carries no clipping context and
+   its shadow is whole again. */
+.nt-sheet {
+  animation: nt-lay-down 360ms var(--ease) 60ms backwards;
+}
+@keyframes nt-lay-down {
+  from {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0.5;
+  }
+}
+
 .nt-sheet-page > * {
   margin-block: 8px;
   animation: nt-line-in var(--dur-slow) var(--ease) backwards;
@@ -1218,35 +1275,64 @@ body {
     transform: translateY(6px);
   }
 }
-.nt-sheet-page > :nth-child(1) { animation-delay: 200ms; }
-.nt-sheet-page > :nth-child(2) { animation-delay: 280ms; }
-.nt-sheet-page > :nth-child(3) { animation-delay: 360ms; }
-.nt-sheet-page > :nth-child(4) { animation-delay: 440ms; }
-.nt-sheet-page > :nth-child(5) { animation-delay: 520ms; }
-.nt-sheet-page > :nth-child(6) { animation-delay: 600ms; }
-.nt-sheet-page > :nth-child(7) { animation-delay: 680ms; }
-.nt-sheet-page > :nth-child(8) { animation-delay: 760ms; }
-.nt-sheet-page > :nth-child(9) { animation-delay: 840ms; }
+.nt-sheet-page > :nth-child(1) { animation-delay: 440ms; }
+.nt-sheet-page > :nth-child(2) { animation-delay: 485ms; }
+.nt-sheet-page > :nth-child(3) { animation-delay: 530ms; }
+.nt-sheet-page > :nth-child(4) { animation-delay: 575ms; }
+.nt-sheet-page > :nth-child(5) { animation-delay: 620ms; }
+.nt-sheet-page > :nth-child(6) { animation-delay: 665ms; }
+.nt-sheet-page > :nth-child(7) { animation-delay: 710ms; }
+.nt-sheet-page > :nth-child(8) { animation-delay: 755ms; }
+.nt-sheet-page > :nth-child(9) { animation-delay: 800ms; }
 
-/* The words come first, and only once. */
-.nt-hero-say > * {
-  animation: nt-rise var(--dur-slow) var(--ease) backwards;
+/* The line the model is still writing waits for the rest of the page to settle,
+   then fades in where it stands rather than sliding into place. A block being
+   put on the page and a sentence being written onto it are not the same event,
+   so they do not get the same movement. Placed after the nth-child rules on
+   purpose: equal specificity, so source order decides. */
+.nt-sheet-page > .is-streaming {
+  animation-name: nt-write-in;
+  animation-delay: 1150ms;
 }
-.nt-hero-say > :nth-child(1) { animation-delay: 40ms; }
-.nt-hero-say > :nth-child(2) { animation-delay: 110ms; }
-.nt-hero-say > :nth-child(3) { animation-delay: 180ms; }
-.nt-hero-say > :nth-child(4) { animation-delay: 250ms; }
-@keyframes nt-rise {
+@keyframes nt-write-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
   }
 }
 
-/* The dimension lines are drawn after the sheet they measure, the way they
-   would be added to a finished drawing. */
-.nt-dim {
-  animation: nt-fade var(--dur-slow) var(--ease) 900ms backwards;
+/* The dimensions are added to a finished drawing, so they are drawn rather than
+   faded: the rule grows out of its start tick, and the ticks and the figure
+   arrive once it has reached the far end. Painting a 1px run costs nothing, so
+   `background-size` is honest here where it would not be on a large surface. */
+.nt-dim-h,
+.nt-dim-v {
+  background-color: transparent;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+.nt-dim-h {
+  animation: nt-draw-h 380ms var(--ease) 900ms backwards;
+}
+.nt-dim-v {
+  animation: nt-draw-v 380ms var(--ease) 900ms backwards;
+}
+@keyframes nt-draw-h {
+  from {
+    background-size: 0% 100%;
+  }
+}
+@keyframes nt-draw-v {
+  from {
+    background-size: 100% 0%;
+  }
+}
+.nt-dim-h::before,
+.nt-dim-h::after,
+.nt-dim-v::before,
+.nt-dim-v::after,
+.nt-dim-label {
+  animation: nt-fade 200ms var(--ease) 1250ms backwards;
 }
 @keyframes nt-fade {
   from {
@@ -1361,11 +1447,20 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* The stagger is the one thing that must not simply run faster: nine blocks
-     arriving at once from 6px below is a flinch. They just appear. */
+  /* The entrance is the one thing that must not simply run faster: nine blocks
+     arriving at once from 6px below is a flinch, and a sheet that wipes in over
+     0.01ms is a flash. The whole choreography is removed rather than shortened,
+     so the fold is simply already drawn. */
+  .nt-sheet,
   .nt-sheet-page > *,
   .nt-hero-say > *,
-  .nt-dim {
+  .nt-dim-h,
+  .nt-dim-v,
+  .nt-dim-h::before,
+  .nt-dim-h::after,
+  .nt-dim-v::before,
+  .nt-dim-v::after,
+  .nt-dim-label {
     animation: none !important;
   }
   .nt-stream-head::after {
