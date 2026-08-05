@@ -10,7 +10,10 @@ const sans = Overpass({ variable: "--font-sans", subsets: ["latin"] });
 const mono = Overpass_Mono({ variable: "--font-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://nootles.com"),
+  /* www, because that is what the site actually canonicalises to. The bare
+     apex redirects, and the og:image URL is built off this base — a scraper
+     that declines to follow a redirect for an image gets no image at all. */
+  metadataBase: new URL("https://www.nootles.com"),
   title: {
     default: `${site.name} — ${site.tagline}`,
     template: `%s — ${site.name}`,
@@ -21,6 +24,13 @@ export const metadata: Metadata = {
     description: site.description,
     siteName: site.name,
     type: "website",
+  },
+  /* The card was `summary`, which is the small square thumbnail. The sheet is a
+     landscape object and is unreadable at that size. */
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} — ${site.tagline}`,
+    description: site.description,
   },
 };
 
