@@ -33,20 +33,82 @@ export type Diagram = {
   edges: Edge[];
 };
 
+/* ---- Maths --------------------------------------------------------------
+   Flat by design, like everything else here: a row of tokens, and a token may
+   hold two strings but never another token. Real fractions and superscripts
+   without a parser, and nothing that could nest its way into a bad layout. */
+
+export type MathToken =
+  /** A variable, set in the italic a variable is conventionally set in. */
+  | { t: "run"; text: string }
+  /** Upright: operators, numbers, unit names. */
+  | { t: "op"; text: string }
+  | { t: "frac"; num: string; den: string };
+
+export type Chart = {
+  shape: "bars" | "line";
+  w: number;
+  h: number;
+  points: { label: string; value: number }[];
+  /** Axis top. Left out, it is the largest value with a tenth of headroom. */
+  max?: number;
+  /** Written against the axis, in the metadata voice. */
+  unit?: string;
+  /** Which point the eye should land on. One per chart, same rule as a node. */
+  mark?: number;
+};
+
 export type Block =
   | { kind: "title"; text: string }
   | { kind: "heading"; text: string }
   /** `streaming` marks the line the model is still writing: it carries the caret. */
   | { kind: "text"; text: string; streaming?: boolean }
   | { kind: "list"; items: string[] }
+  | { kind: "check"; items: { text: string; done?: boolean }[] }
   | { kind: "rule" }
-  | { kind: "diagram"; diagram: Diagram };
+  | { kind: "diagram"; diagram: Diagram }
+  /** A line beginning `//` or `#` is set muted; nothing else is coloured. */
+  | { kind: "code"; lang: string; lines: string[]; streaming?: boolean }
+  /** `result` is what the compute engine returned, shown the way the app shows it. */
+  | { kind: "math"; expr: MathToken[]; result?: string }
+  | { kind: "table"; head: string[]; rows: string[][]; numeric?: number[] }
+  | { kind: "chart"; chart: Chart };
 
 export type Doc = {
   /** What the picture is a picture of. Read out to assistive tech. */
   alt: string;
   blocks: Block[];
 };
+
+/* The block types a document actually uses, named the way the app names them.
+
+   This is stamped into every sheet's title block, and it is the site's whole
+   argument in one line: the seven benches differ because the work on them
+   differs, and a register that reads TEXT · MATHS · TABLE · CANVAS says that
+   faster than a paragraph claiming it. Derived rather than authored, so a
+   document cannot advertise a block it does not contain. */
+export function blockRegister(doc: Doc): string {
+  const names: Record<Block["kind"], string | null> = {
+    title: "Text",
+    heading: "Text",
+    text: "Text",
+    list: "List",
+    check: "List",
+    code: "Code",
+    math: "Maths",
+    table: "Table",
+    chart: "Chart",
+    diagram: "Canvas",
+    rule: null,
+  };
+
+  const seen: string[] = [];
+  for (const block of doc.blocks) {
+    const name = names[block.kind];
+    if (name && !seen.includes(name)) seen.push(name);
+  }
+  return seen.join(" · ");
+}
 
 /* ---- Edge geometry ------------------------------------------------------
    Which sides an edge leaves and lands on is computed from where the two boxes
@@ -139,4 +201,50 @@ export function nodeById(d: Diagram, id: string): Node {
   const n = d.nodes.find((x) => x.id === id);
   if (!n) throw new Error(`No node "${id}" in diagram`);
   return n;
+}
+
+/* ---- Chart geometry -----------------------------------------------------
+   Same rule the diagrams run on: the shape is computed from the data, never
+   hand-placed, so a number can be changed and the picture stays honest. Kept
+   here rather than in the component so the geometry check can run it too. */
+
+const AXIS_ROOM = 20; // under the baseline, for the labels
+const HEAD_ROOM = 16; // over the tallest bar, for its value
+const BAR_GAP = 10;
+const DOT_INSET = 5;
+
+export type ChartGeometry = {
+  max: number;
+  baseline: number;
+  bars: { x: number; y: number; w: number; h: number; cx: number }[];
+  dots: { x: number; y: number }[];
+  path: string;
+};
+
+export function chartGeometry(c: Chart): ChartGeometry {
+  const values = c.points.map((p) => p.value);
+  const max = c.max ?? Math.max(...values, 1) * 1.1;
+  const baseline = c.h - AXIS_ROOM;
+  const span = baseline - HEAD_ROOM;
+  const y = (v: number) => baseline - (v / max) * span;
+
+  const n = c.points.length;
+  const barW = (c.w - BAR_GAP * (n - 1)) / n;
+  const bars = c.points.map((p, i) => {
+    const x = i * (barW + BAR_GAP);
+    const top = y(p.value);
+    return { x, y: top, w: barW, h: baseline - top, cx: x + barW / 2 };
+  });
+
+  const step = n > 1 ? (c.w - DOT_INSET * 2) / (n - 1) : 0;
+  const dots = c.points.map((p, i) => ({
+    x: DOT_INSET + i * step,
+    y: y(p.value),
+  }));
+
+  const path = dots
+    .map((d, i) => `${i === 0 ? "M" : "L"} ${d.x.toFixed(1)} ${d.y.toFixed(1)}`)
+    .join(" ");
+
+  return { max, baseline, bars, dots, path };
 }

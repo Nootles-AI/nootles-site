@@ -2,82 +2,82 @@
 
 /* Nootles — the page outside the door.
 
-   The product is paper and graphite: neutral surfaces, one green reserved for
-   the mark, one amber reserved for the model at work. Inside the app that green
-   is allowed almost nowhere, because a colour that marks a state stops being a
-   signature. Out here there is no state to mark — the whole surface IS identity
-   — so this is the one place it gets spent, and it is spent on the desk rather
-   than on the controls. White paper lying on a sage table.
+   A drawing sheet lying on gridded paper. The product is one document that
+   takes every form a thought arrives in, so the site is set the way a drawing
+   office sets a sheet: everything on a printed grid, the frame drawn, the
+   metadata stamped in a title block rather than written out in prose.
+
+   Two colours are spent, and only two. The sage is the app's mark, and out here
+   it is the grid printed on the paper — the surface's own rule, never a state.
+   The amber means the model is working and appears nowhere else, exactly as
+   inside the app. Everything else is graphite on white.
 
    Every ratio quoted below is measured by `scripts/contrast.mjs`, not judged. */
 
 :root {
-  /* ---- The desk --------------------------------------------------------
-     Hue 140: a touch cooler and greener than the mark's 136, so the mark still
-     reads as the saturated thing sitting on the surface rather than as more of
-     it. Deliberately past the warm-neutral band — this is sage, not paper. */
-  --field: oklch(0.935 0.028 140);
-  --field-deep: oklch(0.885 0.04 140);
-  --field-rule: oklch(0.855 0.036 140);
-  --field-glow: oklch(0.962 0.022 138);
+  /* ---- The paper -------------------------------------------------------
+     Near-white, carrying the faintest cast of the grid printed on it. Past the
+     warm-neutral band on purpose: this is drafting stock, not parchment. */
+  --paper: oklch(0.981 0.004 140);
+  --sheet: oklch(1 0 0);
+  --sunken: oklch(0.968 0.004 140);
 
-  /* ---- Paper -----------------------------------------------------------
-     The sheets are the product's own surface, so these are the app's values
-     verbatim. A visitor should be looking at the real thing. */
-  --paper: oklch(1 0 90);
-  --paper-sunken: oklch(0.975 0.002 90);
-  --paper-border: oklch(0.93 0.003 90);
-  --paper-border-strong: oklch(0.875 0.004 90);
+  /* The printed grid. Non-text, so it needs only to be seen: fine lines every
+     20 document pixels, a heavier one every fifth. */
+  --grid: oklch(0.936 0.019 140);
+  --grid-major: oklch(0.889 0.026 140);
 
   /* ---- Ink -------------------------------------------------------------
-     Two ramps, because grey text on a coloured ground goes muddy. On paper the
-     app's own neutrals; on sage, the sage's own hue darkened. */
-  --ink: oklch(0.25 0.005 90); /* 13.3:1 on field, 16:1 on paper */
-  --ink-soft: oklch(0.43 0.032 140); /* 6.66:1 on field */
-  --ink-faint: oklch(0.55 0.03 140); /* decorative only, never text */
-  --paper-muted: oklch(0.535 0.004 90); /* 5.17:1 on paper */
-  --paper-faint: oklch(0.72 0.004 90);
+     One ramp, because everything now sits on paper. */
+  --ink: oklch(0.22 0.004 140); /* 16.4:1 on paper */
+  --ink-2: oklch(0.47 0.006 140); /* 6.45:1 on paper — the lightest text allowed */
+  --ink-3: oklch(0.65 0.008 140); /* 3.1:1 — graphical only: ticks, markers, arrows */
+
+  /* Drawn lines. The frame is heavier than the construction lines inside it. */
+  --rule: oklch(0.855 0.009 140);
+  --rule-strong: oklch(0.72 0.011 140);
+  --frame: oklch(0.42 0.006 140);
 
   /* ---- Identity --------------------------------------------------------
-     3.33:1 on the field. Over the 3:1 a mark needs, under the 4.5:1 text needs,
-     which is exactly the boundary of what it may be: shapes, not sentences. */
+     The app's mark, verbatim. 3.6:1 on paper — over the 3:1 a mark needs and
+     under the 4.5:1 text needs, which is the boundary of what it may be. */
   --brand: oklch(0.592 0.049 136);
 
   /* ---- Meaning ---------------------------------------------------------
-     The only colour here that says something, and it says the model is working.
-     It appears twice on the whole site, both times on a line being written. */
+     The only colour here that says anything, and it says the model is working. */
   --accent: oklch(0.542 0.145 75);
   --accent-soft: oklch(0.716 0.116 75);
 
-  /* Changes under review. Two hues, kept low, so a marked-up page still reads
+  /* Changes waiting to be answered. Kept low, so a marked-up page still reads
      as paper with two things noted on it. */
-  --diff-add: oklch(0.53 0.095 148);
-  --diff-add-bg: oklch(0.962 0.024 148);
-  --diff-del: oklch(0.548 0.115 25);
-  --diff-del-bg: oklch(0.958 0.019 25);
+  --diff-add: oklch(0.5 0.098 148);
+  --diff-add-bg: oklch(0.958 0.026 148);
+  --diff-del: oklch(0.52 0.118 25);
+  --diff-del-bg: oklch(0.955 0.021 25);
 
-  /* Canvas lines, cooler than paper borders so shapes read as objects sitting
-     on the page rather than as chrome drawn into it. */
-  --shape-line: oklch(0.845 0.004 90);
-  --shape-fill: oklch(0.972 0.002 90);
-  --edge-line: oklch(0.7 0.005 90);
+  /* Shapes on the canvas, cooler than the sheet's own lines so they read as
+     objects drawn on the page rather than as the page's furniture. */
+  --shape-line: oklch(0.79 0.006 140);
+  --shape-fill: oklch(0.966 0.003 140);
+  --edge-line: oklch(0.66 0.007 140);
 
-  /* ---- Type ------------------------------------------------------------
-     One family, three weights. The mono is not a second voice for headings —
-     it carries metadata only, which is the same job it has inside the app. */
+  /* ---- Geometry ---------------------------------------------------------
+     The grid is 20px, and every measurement here is a multiple of it. That is
+     the whole discipline: nothing is placed, everything lands on a line. */
+  --unit: 20px;
+  --gutter: clamp(20px, 4vw, 60px);
+  --shell: 1280px;
   --measure: 600px;
-  --tracking-meta: 0.06em;
+  --tracking-meta: 0.08em;
 
-  /* ---- Geometry --------------------------------------------------------- */
-  --radius-sm: 4px;
-  --radius: 6px;
-  --radius-lg: 10px;
-  --gutter: clamp(20px, 5vw, 56px);
-  --shell: 1120px;
+  /* Drafting has no rounded corners. These exist for the two controls that
+     would look broken without them, and nothing else. */
+  --radius-sm: 2px;
+  --radius-pill: 999px;
 
   /* ---- Motion ----------------------------------------------------------
-     The app's own curve: heavily weighted to the end, so movement covers the
-     distance early and settles slowly. The settle is what reads as weight. */
+     The app's own curve: weighted to the end, so movement covers the distance
+     early and settles slowly. The settle is what reads as weight. */
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-fast: 110ms;
   --dur: 170ms;
@@ -85,35 +85,48 @@
 
   /* Never write a raw z-value. */
   --z-base: 1;
-  --z-sticky: 30;
   --z-nav: 40;
 }
 
 @theme inline {
-  --color-field: var(--field);
   --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
   --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
+  --color-ink-2: var(--ink-2);
   --color-brand: var(--brand);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
+/* ---- The gridded ground -------------------------------------------------
+   Printed on the html element so it runs past the last section on a short page
+   and into the overscroll. Four gradients: fine lines both ways, then the
+   heavier fifth. Painted with `background-position: 0 0` from the top left so
+   the grid and the layout share an origin — a sheet placed on a multiple of 20
+   lands exactly on a printed line, which is the entire point of doing this. */
 html {
   scroll-behavior: smooth;
-  /* The sage runs to the edges of the window, including past the last section
-     on a short page and into the overscroll on a trackpad. */
-  background: var(--field);
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:
+    100px 100px,
+    100px 100px,
+    20px 20px,
+    20px 20px;
+  background-position: 0 0;
 }
 
 body {
-  background: var(--field);
   color: var(--ink);
-  /* The hero's light is wider than the shell it is centred in, deliberately.
-     `clip` rather than `hidden` so the sticky nav still sticks. */
+  /* The hero's dimension lines reach past the shell. `clip` rather than
+     `hidden` so the sticky nav still sticks. */
   overflow-x: clip;
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -144,20 +157,39 @@ body {
   border: 0;
 }
 
+/* The metadata voice. Every annotation on the site is this: the title block
+   cells, the dimension figures, the axis units, the notes under a node. Mono
+   and tracked because that is how a drawing is annotated, and confined to
+   labels — never a heading, never a sentence.
+
+   It is set at --ink-2 and never lighter. --ink-3 exists for marks that carry
+   no words at all: ticks, arrowheads, bullets. A 10px label is the last place
+   to start economising on contrast, which is exactly where it usually happens. */
+.nt-meta {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+/* Stamped rather than written: the sheet's own furniture. Left off the labels
+   inside a document, where the author's own capitalisation is the content. */
+.nt-stamp {
+  text-transform: uppercase;
+}
+
 /* ---- Nav ----------------------------------------------------------------
-   Sticky, because the one thing being asked for is in it. The background fades
-   out over its own bottom third rather than ending on a hard rule: the desk is
-   lit unevenly under it, and a flat bar with a straight edge would show the
-   seam every time the light behind it changed. */
+   Sticky, because the one thing being asked for is in it. It sits on the paper
+   with a construction line under it rather than a filled bar — the grid should
+   run behind the nav, not be covered by it. */
 .nt-nav {
   position: sticky;
   top: 0;
   z-index: var(--z-nav);
-  background: linear-gradient(
-    var(--field) 62%,
-    color-mix(in oklch, var(--field) 72%, transparent) 84%,
-    transparent
-  );
+  background: color-mix(in oklch, var(--paper) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
 }
 
 .nt-nav-in {
@@ -165,7 +197,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  height: 74px;
+  height: 59px; /* 60 less the rule, so the rule lands on a grid line */
 }
 
 .nt-nav-mark {
@@ -179,110 +211,81 @@ body {
   opacity: 0.72;
 }
 
-/* The one filled control on the site. Ink, not sage: the colour is the room,
-   and the thing you press should not be more room. */
+/* The one filled control on the site. A drawn rectangle, not a pill: the only
+   pill here is the review bar inside the product, where it belongs. */
 .nt-cta {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   height: 40px;
   padding-inline: 18px;
-  border-radius: 999px;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-sm);
   background: var(--ink);
-  color: var(--paper); /* 16:1 */
+  color: var(--sheet); /* 16.6:1 */
   font-size: 14px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
+  font-weight: 600;
+  letter-spacing: 0.005em;
   white-space: nowrap;
   transition:
-    transform var(--dur) var(--ease),
-    box-shadow var(--dur) var(--ease),
-    opacity var(--dur-fast) var(--ease);
-  box-shadow:
-    0 1px 2px oklch(0.25 0.02 140 / 0.14),
-    0 4px 14px oklch(0.25 0.02 140 / 0.12);
+    background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
 }
 .nt-cta:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 2px 4px oklch(0.25 0.02 140 / 0.16),
-    0 8px 22px oklch(0.25 0.02 140 / 0.16);
-}
-.nt-cta:active {
-  transform: translateY(0);
-  opacity: 0.9;
+  background: var(--sheet);
+  color: var(--ink);
 }
 /* The arrow, and only the arrow, moves. */
 .nt-cta-arrow {
   transition: transform var(--dur) var(--ease);
 }
 .nt-cta:hover .nt-cta-arrow {
-  transform: translateX(2px);
+  transform: translateX(3px);
 }
 
 .nt-cta.is-quiet {
   background: transparent;
   color: var(--ink);
-  box-shadow: none;
-  border: 1px solid var(--field-rule);
+  border-color: var(--rule-strong);
 }
 .nt-cta.is-quiet:hover {
-  background: color-mix(in oklch, var(--paper) 55%, transparent);
-  border-color: var(--ink-faint);
-  box-shadow: none;
+  background: var(--ink);
+  color: var(--sheet);
+  border-color: var(--ink);
 }
 
 /* ---- Hero ---------------------------------------------------------------
-   One idea in the fold: a sentence, and the page it is about. The light behind
-   the sheet is the door's halo grown up — wide and soft enough that there is no
-   edge to find, so it reads as the desk being lit rather than as a shape drawn
-   on it. */
+   The claim is written on the paper itself; the document is a sheet laid beside
+   it and dimensioned. Nothing is centred, because a drawing is not centred. */
 .nt-hero {
-  position: relative;
-  padding-top: clamp(40px, 7vw, 84px);
-  isolation: isolate;
-}
-.nt-hero::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  left: 50%;
-  top: clamp(120px, 22vw, 260px);
-  width: min(1500px, 165vw);
-  height: min(1100px, 120vw);
-  transform: translateX(-50%);
-  background: radial-gradient(
-    closest-side,
-    var(--field-glow),
-    color-mix(in oklch, var(--field-glow) 45%, transparent) 52%,
-    transparent 76%
-  );
-  pointer-events: none;
+  padding-top: clamp(40px, 6vw, 80px);
+  padding-bottom: clamp(60px, 8vw, 100px);
 }
 
-.nt-hero-say {
-  max-width: 780px;
-  margin-inline: auto;
-  text-align: center;
+.nt-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: clamp(40px, 5vw, 80px);
 }
 
 .nt-h1 {
-  margin: 0 auto;
-  max-width: 17ch;
-  font-size: clamp(2.25rem, 5.4vw, 4.125rem);
-  font-weight: 600;
-  line-height: 1.07;
-  letter-spacing: -0.03em;
+  margin: 0;
+  max-width: 9ch;
+  font-size: clamp(3rem, 6.4vw, 5.25rem);
+  font-weight: 700;
+  line-height: 0.96;
+  letter-spacing: -0.035em;
   text-wrap: balance;
   color: var(--ink);
 }
 
 .nt-lede {
-  margin: clamp(18px, 2.2vw, 26px) auto 0;
-  max-width: 47ch;
-  font-size: clamp(1rem, 1.28vw, 1.1875rem);
+  margin: clamp(22px, 2.4vw, 30px) 0 0;
+  max-width: 42ch;
+  font-size: clamp(1.0625rem, 1.2vw, 1.1875rem);
   line-height: 1.55;
-  color: var(--ink-soft); /* 6.66:1 */
+  color: var(--ink-2); /* 5.03:1 */
   text-wrap: pretty;
 }
 
@@ -290,147 +293,256 @@ body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  gap: 12px;
   margin-top: clamp(26px, 3vw, 36px);
 }
 
-/* ---- The desk -----------------------------------------------------------
-   A second sheet behind the first, turned a degree and a half. It is not
-   decoration: a project is pages, and one sheet on its own says the opposite. */
-.nt-desk {
-  /* The sheet is a fixed 600 document pixels wide, so it changes size by
-     changing scale, never by reflowing — the line breaks are part of the
-     picture, and a page that rewraps is a screenshot of a different page.
-
-     `--page-scale` MUST stay unitless: it is multiplied by 600px below and fed
-     to `transform: scale()`. Deriving it fluidly from the viewport is the
-     obvious idea and it does not work — `calc(100vw / 600)` divides a length by
-     a number and yields a *length*, so the width became px² and the whole
-     declaration was dropped, collapsing the sheet. CSS has no length-to-number
-     division with real support. Hence discrete steps, each chosen so the sheet
-     clears the gutters at the narrow end of its range. */
-  --page-scale: 0.78; /* 468px wide, fits from 560px up */
-  --page-h: min(72vh, 660px);
-  position: relative;
+/* The three frictions, stamped under the claim as a legend rather than written
+   out as a paragraph. A legend is what a drawing uses to say what its marks
+   mean, so it is the honest place for this. */
+.nt-legend {
+  margin: clamp(40px, 5vw, 60px) 0 0;
+  border-top: 1px solid var(--rule);
+  max-width: 46ch;
+}
+.nt-legend-row {
   display: flex;
-  justify-content: center;
-  margin-top: clamp(38px, 5vw, 66px);
-}
-@media (min-width: 1024px) {
-  .nt-desk {
-    --page-scale: 0.9; /* 540px in a 921px column */
-    --page-h: min(76vh, 760px);
-  }
-}
-@media (max-width: 560px) {
-  .nt-desk {
-    --page-scale: 0.66; /* 396px, clears the 432px column at 480 */
-    --page-h: min(68vh, 560px);
-  }
-}
-@media (max-width: 430px) {
-  .nt-desk {
-    --page-scale: 0.52; /* 312px, clears the 335px column at 375 */
-    --page-h: min(64vh, 460px);
-  }
-}
-@media (max-width: 340px) {
-  .nt-desk {
-    --page-scale: 0.44; /* 264px, clears the 280px column at 320 */
-    --page-h: min(60vh, 400px);
-  }
-}
-.nt-desk-back {
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  width: calc(600px * var(--page-scale, 0.78));
-  height: 78px;
-  transform: translateX(-50%) rotate(-1.3deg);
-  transform-origin: 50% 100%;
-  border: 1px solid var(--paper-border);
-  border-radius: var(--radius-lg);
-  background: var(--paper);
-  box-shadow: 0 1px 3px oklch(0.25 0.02 140 / 0.06);
-  pointer-events: none;
-}
-
-/* ---- Sheet --------------------------------------------------------------
-   The app's own picture-of-a-page, kept to the same rules: laid out at the
-   width the document is written at and shrunk by a transform, so line breaks
-   and diagram geometry are the page's own rather than a narrow reflow of them.
-   Everything inside is aria-hidden; the caption under it is what is read. */
-.nt-sheet-figure {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: baseline;
   gap: 14px;
+  padding-block: 11px;
+  border-bottom: 1px solid var(--rule);
+}
+.nt-legend-key {
+  flex: none;
+  width: 7ch;
+  padding-top: 3px; /* the 10px mono sits high against a 15px line */
+  color: var(--ink);
+}
+.nt-legend-text {
+  margin: 0; /* a <dd> carries a 40px indent by default */
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* ---- The sheet ----------------------------------------------------------
+   A real drawing sheet: a heavy trim line, a lighter frame line inside it, the
+   drawing in the field between, and the title block stamped across the foot.
+
+   The page inside is laid out at the width the document is written at and
+   shrunk by a transform, never reflowed — the line breaks and the diagram
+   geometry are the page's own, and a page that rewraps is a picture of a
+   different page. */
+.nt-sheet-wrap {
   margin: 0;
 }
 
-.nt-sheet {
+/* Holds the sheet and the runs measuring it, and nothing else. The dimensions
+   are hung here rather than on the figure so they measure the drawing rather
+   than the drawing plus its caption. The top margin is the room the horizontal
+   run needs above the trim line; it also drops the sheet just below the claim
+   beside it, which is the right relationship anyway. */
+.nt-sheet-stage {
   position: relative;
-  width: calc(600px * var(--page-scale, 0.78));
-  height: var(--page-h, 640px);
-  overflow: hidden;
-  border: 1px solid var(--paper-border);
-  border-radius: var(--radius-lg);
-  background: var(--paper);
-  box-shadow:
-    0 1px 2px oklch(0.25 0.02 140 / 0.05),
-    0 10px 30px oklch(0.25 0.02 140 / 0.07),
-    0 32px 80px oklch(0.25 0.02 140 / 0.09);
+  width: max-content;
+  max-width: 100%;
+  margin-top: 30px;
 }
 
-/* The page does not end at the crop, so it fades rather than being cut. */
-.nt-sheet::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  height: 19%;
-  background: linear-gradient(to bottom, transparent, var(--paper) 88%);
-  pointer-events: none;
+.nt-sheet {
+  /* `--page-scale` MUST stay unitless: it is multiplied by 600px below and fed
+     to `transform: scale()`. Deriving it fluidly from the viewport is the
+     obvious idea and it does not work — `calc(100vw / 600)` divides a length by
+     a number and yields a *length*, so the width becomes px² and the whole
+     declaration is dropped, collapsing the sheet. CSS has no length-to-number
+     division with real support. Hence discrete steps, each chosen so the sheet
+     clears the gutters at the narrow end of its range.
+     `scripts/css.mjs` fails the build if this ever gains a unit. */
+  --page-scale: 1;
+  --page-h: 640px;
+  position: relative;
+  width: calc(600px * var(--page-scale, 1));
+  border: 1px solid var(--frame);
+  background: var(--sheet);
+  box-shadow: 0 1px 2px oklch(0.22 0.01 140 / 0.05);
+}
+
+/* The frame line: a second, lighter rule set in from the trim, which is how a
+   sheet is actually printed. Drawn rather than described. */
+.nt-sheet-field {
+  position: relative;
+  height: var(--page-h, 640px);
+  margin: 7px 7px 0;
+  border: 1px solid var(--rule);
+  border-bottom: 0;
+  overflow: hidden;
 }
 
 .nt-sheet-page {
   position: absolute;
   inset: 0 auto auto 0;
   width: 600px;
-  transform: scale(var(--page-scale, 0.78));
+  transform: scale(var(--page-scale, 1));
   transform-origin: top left;
-  padding: 38px 42px 0;
+  padding: 30px 34px 0;
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.65;
   color: var(--ink);
 }
 .nt-sheet-page > :first-child {
   margin-top: 0;
 }
 
+/* The document does not end at the frame, so it fades into the sheet rather
+   than being guillotined by it. */
+.nt-sheet-field::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 15%;
+  background: linear-gradient(to bottom, transparent, var(--sheet) 92%);
+  pointer-events: none;
+}
+
+/* ---- Title block --------------------------------------------------------
+   Stamped across the foot of every sheet, carrying what the drawing is and at
+   what scale. This is where the site's metadata lives — not in an eyebrow over
+   a heading, which is the thing every generated page does. */
+.nt-title-block {
+  display: flex;
+  align-items: stretch;
+  margin: 0 7px 7px;
+  border: 1px solid var(--rule);
+}
+.nt-tb-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px 11px;
+  border-left: 1px solid var(--rule);
+}
+.nt-tb-cell:first-child {
+  flex: 1 1 auto;
+  border-left: 0;
+}
+.nt-tb-label {
+  color: var(--ink-2);
+}
+.nt-tb-value {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Dimension lines ----------------------------------------------------
+   A measured run with ticks at each end and the figure sitting on the line
+   with the paper punched out behind it, which is how a dimension is drawn.
+   Decorative in the accessibility sense — the caption carries the meaning —
+   so the whole apparatus is hidden from assistive tech at the component. */
+.nt-dim {
+  position: absolute;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+.nt-dim-h {
+  left: 0;
+  right: 0;
+  top: -26px;
+  height: 1px;
+  background: currentColor;
+}
+.nt-dim-h::before,
+.nt-dim-h::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 1px;
+  height: 9px;
+  background: currentColor;
+}
+.nt-dim-h::before {
+  left: 0;
+}
+.nt-dim-h::after {
+  right: 0;
+}
+/* Hung on the left, in the gap between the claim and the drawing. On the right
+   it would have to live in the page gutter, and at the narrow end of the range
+   there is no gutter to live in. */
+.nt-dim-v {
+  top: 0;
+  bottom: 0;
+  left: -26px;
+  width: 1px;
+  background: currentColor;
+}
+.nt-dim-v::before,
+.nt-dim-v::after {
+  content: "";
+  position: absolute;
+  left: -4px;
+  width: 9px;
+  height: 1px;
+  background: currentColor;
+}
+.nt-dim-v::before {
+  top: 0;
+}
+.nt-dim-v::after {
+  bottom: 0;
+}
+.nt-dim-label {
+  position: absolute;
+  padding-inline: 6px;
+  background: var(--paper);
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.nt-dim-h .nt-dim-label {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.nt-dim-v .nt-dim-label {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* The caption is the part meant to be read: everything inside the sheet is a
+   picture, and this is what assistive tech gets instead. */
 .nt-sheet-caption {
-  margin: 0;
-  max-width: 52ch;
+  margin: 14px 0 0;
+  max-width: 56ch;
   font-size: 13px;
   line-height: 1.55;
-  color: var(--ink-soft);
-  text-align: center;
+  color: var(--ink-2);
   text-wrap: pretty;
 }
 
 /* ---- The document -------------------------------------------------------
-   Set the way the editor sets it, because it is meant to be the editor. */
+   Set the way the editor sets it, because it is meant to be the editor. Every
+   block below is one the app can actually produce and the model can actually
+   address; nothing here is invented for the picture. */
 .nt-doc-title {
-  margin: 0 0 4px;
-  font-size: 30px;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.022em;
+  margin: 0 0 6px;
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.024em;
 }
 .nt-doc-heading {
   margin: 0;
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.012em;
 }
@@ -440,25 +552,248 @@ body {
 }
 .nt-doc-list {
   margin: 0;
-  padding-left: 1.3em;
+  padding-left: 1.35em;
   list-style: disc;
 }
 .nt-doc-list li::marker {
-  color: var(--paper-faint);
+  color: var(--ink-3);
 }
 .nt-doc-rule {
-  margin: 14px 0;
+  margin: 12px 0;
   border: 0;
-  border-top: 1px solid var(--paper-border);
+  border-top: 1px solid var(--rule);
 }
 .nt-doc-canvas {
   padding-block: 2px;
 }
 
+/* A checklist, with the box drawn rather than a glyph pasted in. */
+.nt-doc-check {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.nt-check-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+.nt-check-box {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  margin-top: 4px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-sm);
+  background: var(--sheet);
+}
+.nt-check-row.is-done .nt-check-box {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+.nt-check-tick {
+  display: block;
+  color: var(--sheet);
+}
+.nt-check-row.is-done .nt-check-text {
+  color: var(--ink-2);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* ---- Code ---------------------------------------------------------------
+   The app runs CodeMirror in here with a grammar loaded per language. On the
+   page outside, the grammar is not the point and colour would be a second
+   meaning competing with the amber, so it is set monochrome: comments recede,
+   nothing else is marked. */
+.nt-doc-code {
+  margin: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  background: var(--sunken);
+  overflow: hidden;
+}
+.nt-code-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 11px;
+  border-bottom: 1px solid var(--rule);
+}
+.nt-code-body {
+  margin: 0;
+  padding: 9px 11px 10px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--ink);
+  overflow: hidden;
+}
+.nt-code-line {
+  display: block;
+  white-space: pre;
+}
+.nt-code-line.is-note {
+  color: var(--ink-2);
+}
+
+/* ---- Maths --------------------------------------------------------------
+   Variables are set in an italic serif because that is what a variable is set
+   in — a convention of the notation, not a change of the site's voice. The
+   fraction is a real fraction: a rule between two rows, not a slash. */
+.nt-doc-math {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.18em;
+  padding-block: 6px;
+  font-size: 17px;
+  line-height: 1.35;
+}
+.nt-math-run {
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+}
+.nt-math-op {
+  font-family: Georgia, "Times New Roman", serif;
+  font-variant-numeric: tabular-nums;
+}
+.nt-math-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 0.92em;
+  vertical-align: middle;
+}
+.nt-math-num {
+  padding: 0 0.4em 1px;
+  border-bottom: 1px solid currentColor;
+}
+.nt-math-den {
+  padding: 1px 0.4em 0;
+}
+/* What the compute engine returned. Mono, because it is a result rather than
+   notation, and muted because you asked for it and already know it is there. */
+.nt-math-result {
+  display: block;
+  margin-top: 5px;
+  text-align: center;
+}
+
+/* ---- Tables -------------------------------------------------------------
+   Ruled rows, no zebra striping, no rounded container. Numbers set in the mono
+   with tabular figures and ranged right, so a column of them lines up as a
+   column of them. */
+.nt-doc-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.nt-doc-table th {
+  padding: 0 9px 6px;
+  border-bottom: 1px solid var(--rule-strong);
+  text-align: left;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.nt-doc-table td {
+  padding: 6px 9px;
+  border-bottom: 1px solid var(--rule);
+  line-height: 1.45;
+  vertical-align: top;
+}
+.nt-doc-table tr:last-child td {
+  border-bottom: 0;
+}
+.nt-doc-table th:first-child,
+.nt-doc-table td:first-child {
+  padding-left: 0;
+}
+.nt-doc-table th:last-child,
+.nt-doc-table td:last-child {
+  padding-right: 0;
+}
+.nt-doc-table .is-num {
+  text-align: right;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- Charts -------------------------------------------------------------
+   Drawn on the sheet in the same graphite as everything else. One bar carries
+   the point of the chart and is filled; the rest are outlined. That is the same
+   rule the diagrams use for their one filled node. */
+.nt-doc-chart {
+  padding-block: 4px;
+}
+.nt-chart {
+  position: relative;
+}
+.nt-chart-ink {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.nt-chart-axis {
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+.nt-chart-bar {
+  fill: var(--shape-fill);
+  stroke: var(--shape-line);
+  stroke-width: 1;
+}
+.nt-chart-bar.is-mark {
+  fill: var(--ink);
+  stroke: var(--ink);
+}
+.nt-chart-line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nt-chart-dot {
+  fill: var(--sheet);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.nt-chart-dot.is-mark {
+  fill: var(--ink);
+}
+.nt-chart-label {
+  position: absolute;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: nowrap;
+}
+.nt-chart-value {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  white-space: nowrap;
+  color: var(--ink);
+}
+
 /* The luminous head at the end of a line the model is still writing. Pulsing
    means tokens are still arriving. It is the only amber on the site, and it
    never dims the text in front of it — you have to be able to read a suggestion
-   before you accept it. */
+   before you can accept it. */
 .nt-stream-head::after {
   content: "";
   display: inline-block;
@@ -466,7 +801,6 @@ body {
   height: 1.05em;
   margin-left: 3px;
   vertical-align: text-bottom;
-  border-radius: 1px;
   background: var(--accent);
   box-shadow:
     0 0 4px var(--accent-soft),
@@ -482,8 +816,8 @@ body {
 
 /* ---- Diagram ------------------------------------------------------------
    Outlines and connectors in one SVG, labels in boxes over it. Strokes are set
-   at 1.25px because the whole page is scaled down by the sheet — a 1px line
-   would land under a pixel and go grey. */
+   at 1.25px because a sheet may be scaled down — a 1px line would land under a
+   device pixel and go grey. */
 .nt-diagram {
   position: relative;
 }
@@ -493,13 +827,13 @@ body {
   overflow: visible;
 }
 .nt-shape {
-  fill: var(--paper);
+  fill: var(--sheet);
   stroke: var(--shape-line);
   stroke-width: 1.25;
 }
 .nt-shape.is-fill {
   fill: var(--shape-fill);
-  stroke: var(--paper-border-strong);
+  stroke: var(--rule-strong);
 }
 .nt-edge {
   fill: none;
@@ -532,134 +866,145 @@ body {
   letter-spacing: -0.008em;
   color: var(--ink);
 }
-/* Counts and dimensions are metadata, so they speak in the mono voice the app
-   gives metadata everywhere. */
+/* Counts and dimensions are metadata, so they speak in the metadata voice the
+   app gives metadata everywhere. Not stamped: inside a document the author's
+   own capitalisation is the content. */
 .nt-node-note {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 10px;
-  line-height: 1.3;
-  letter-spacing: 0.01em;
-  color: var(--paper-muted);
-  font-variant-numeric: tabular-nums;
+  margin-top: 1px;
 }
 
-/* A word on a connector sits on the paper it crosses, so it takes the paper
+/* A word on a connector sits on the paper it crosses, so it takes the sheet
    with it rather than being read through the line. */
 .nt-edge-label {
   position: absolute;
   transform: translate(-50%, -50%);
   padding: 0 4px;
-  background: var(--paper);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.02em;
-  color: var(--paper-muted);
+  background: var(--sheet);
   white-space: nowrap;
   pointer-events: none;
 }
 
 /* ---- Sections -----------------------------------------------------------
-   No kicker above any of them. A label reading "HOW IT WORKS" over a heading
-   that already says how it works is one sentence doing the job twice. */
+   Separated by a construction line and a stamped number, because on this site
+   the sections genuinely are a numbered sequence of sheets. No kicker over any
+   heading: a label reading "HOW IT WORKS" above a heading that already says how
+   it works is one sentence doing the job twice. */
 .nt-section {
-  padding-block: clamp(72px, 10vw, 132px);
+  padding-block: clamp(60px, 8vw, 100px);
+  border-top: 1px solid var(--rule);
 }
 
 .nt-section-head {
-  max-width: 30ch;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(20px, 4vw, 56px);
+}
+.nt-section-no {
+  flex: none;
+  padding-top: 6px;
 }
 .nt-h2 {
   margin: 0;
-  font-size: clamp(1.75rem, 3.1vw, 2.5rem);
-  font-weight: 600;
-  line-height: 1.14;
-  letter-spacing: -0.026em;
+  max-width: 22ch;
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.028em;
   text-wrap: balance;
 }
 .nt-h2-note {
   margin: 14px 0 0;
-  max-width: 46ch;
+  max-width: 48ch;
   font-size: 1.0625rem;
   line-height: 1.6;
-  color: var(--ink-soft);
+  color: var(--ink-2);
   text-wrap: pretty;
 }
 
-/* ---- Moments ------------------------------------------------------------
-   Three things the product does, each shown rather than described, and each
-   given a different object to be shown on. Alternating sides so the eye has to
-   travel — three identical rows would read as a table of features. */
-.nt-moments {
+/* ---- Frictions ----------------------------------------------------------
+   Three things that stop happening, each shown on a piece of the surface it
+   stops happening on. Alternating sides so the eye has to travel: three
+   identical rows would read as a table of features. */
+.nt-frictions {
   display: flex;
   flex-direction: column;
-  gap: clamp(56px, 7vw, 92px);
-  margin-top: clamp(48px, 6vw, 76px);
+  gap: clamp(48px, 6vw, 84px);
+  margin-top: clamp(44px, 5vw, 68px);
 }
-.nt-moment {
+.nt-friction {
   display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
   align-items: center;
   gap: clamp(28px, 5vw, 72px);
 }
-.nt-moment.is-flipped .nt-moment-say {
+.nt-friction.is-flipped .nt-friction-say {
   order: 2;
 }
 .nt-h3 {
   margin: 0;
-  font-size: clamp(1.3rem, 2.1vw, 1.625rem);
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.022em;
   text-wrap: balance;
 }
-.nt-moment-note {
+.nt-friction-note {
   margin: 12px 0 0;
-  max-width: 40ch;
+  max-width: 42ch;
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--ink-soft);
+  color: var(--ink-2);
   text-wrap: pretty;
 }
+.nt-friction-was {
+  display: block;
+  margin-bottom: 10px;
+}
 
-/* A strip of the product, not a card: same paper, same hairline, same shadow
-   as the sheet, because it is a piece of the same page. */
+/* A strip torn off a sheet: same white, same frame line, no shadow theatre. */
 .nt-strip {
-  padding: 20px 22px;
-  border: 1px solid var(--paper-border);
-  border-radius: var(--radius-lg);
-  background: var(--paper);
-  box-shadow:
-    0 1px 2px oklch(0.25 0.02 140 / 0.04),
-    0 8px 24px oklch(0.25 0.02 140 / 0.06);
+  padding: 16px 18px;
+  border: 1px solid var(--frame);
+  background: var(--sheet);
 }
 .nt-strip-line {
   margin: 0;
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.65;
   color: var(--ink);
 }
 /* What the model is offering but has not been given. Legible enough to read
    before you accept it, tinted enough to read as not-yet-real. */
 .nt-ghost {
-  color: var(--paper-muted);
+  color: var(--ink-2);
 }
 .nt-key {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 26px;
-  height: 22px;
+  height: 21px;
   margin-left: 8px;
   padding-inline: 6px;
   vertical-align: middle;
-  border: 1px solid var(--paper-border-strong);
+  border: 1px solid var(--rule-strong);
   border-bottom-width: 2px;
   border-radius: var(--radius-sm);
-  background: var(--paper-sunken);
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  background: var(--sunken);
+  font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
   line-height: 1;
-  color: var(--paper-muted);
+  color: var(--ink-2);
+}
+
+.nt-strip-said {
+  margin: 0 0 12px;
+  padding: 7px 10px;
+  border: 1px solid var(--rule);
+  background: var(--sunken);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink);
 }
 
 /* The drawing inside a strip is laid out in its own pixels like every other
@@ -676,24 +1021,14 @@ body {
   }
 }
 
-.nt-strip-said {
-  margin: 0 0 14px;
-  padding: 7px 10px;
-  border-radius: var(--radius);
-  background: var(--paper-sunken);
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--ink);
-}
-
 /* Added and removed lines, in the tints the app marks them with. Full-width
-   tinted rows rather than a stripe down one side. */
+   tinted rows rather than a stripe down one side. Struck through and underlined
+   rather than told apart by hue, so the two read apart without the colour. */
 .nt-diff {
   margin: 0;
-  padding: 3px 10px;
-  border-radius: var(--radius-sm);
+  padding: 3px 9px;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 .nt-diff.is-add {
   background: var(--diff-add-bg);
@@ -713,74 +1048,66 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  margin-top: 16px;
+  margin-top: 14px;
   padding: 3px 3px 3px 11px;
-  border: 1px solid var(--paper-border);
-  border-radius: 999px;
-  background: var(--paper);
-  box-shadow:
-    0 1px 2px oklch(0.25 0.02 140 / 0.05),
-    0 6px 20px oklch(0.25 0.02 140 / 0.09);
-}
-.nt-reviewbar-count {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: var(--tracking-meta);
-  color: var(--paper-muted);
-  font-variant-numeric: tabular-nums;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-pill);
+  background: var(--sheet);
 }
 .nt-reviewbar-sep {
   width: 1px;
   height: 14px;
   margin-inline: 8px;
-  background: var(--paper-border);
+  background: var(--rule);
 }
-/* The box is centred by the bar, but the label has to be centred inside the
-   box too. In the app this is a <button>, which centres its own text; here it
-   is a span, which parks it on the baseline at the top of a 24px item. */
+/* In the app this is a <button>, which centres its own text; here it is a span,
+   which would otherwise park it on the baseline at the top of the box. */
 .nt-reviewbar-act {
   display: inline-flex;
   align-items: center;
   height: 24px;
   padding-inline: 9px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 12px;
   line-height: 1;
   color: var(--ink);
   white-space: nowrap;
 }
 .nt-reviewbar-act.is-quiet {
-  color: var(--paper-muted);
+  color: var(--ink-2);
 }
 
 /* ---- The audience index -------------------------------------------------
-   A list, not a grid of cards. Seven of anything in boxes is a menu; seven
-   lines with a rule between them is a contents page, which is what this is. */
+   A schedule of sheets, not a grid of cards. Seven of anything in boxes is a
+   menu; seven ruled lines with their numbers is a drawing register, which is
+   what this is. */
 .nt-index {
-  border-top: 1px solid var(--field-rule);
-  margin-top: clamp(40px, 5vw, 60px);
+  border-top: 1px solid var(--rule-strong);
+  margin-top: clamp(36px, 4vw, 52px);
 }
 .nt-index-row {
   display: flex;
   align-items: baseline;
-  gap: 20px;
-  padding: clamp(18px, 2.2vw, 24px) clamp(10px, 1.6vw, 18px);
-  border-bottom: 1px solid var(--field-rule);
-  border-radius: var(--radius);
+  gap: clamp(14px, 2vw, 24px);
+  padding: clamp(15px, 1.8vw, 20px) clamp(8px, 1.2vw, 14px);
+  border-bottom: 1px solid var(--rule);
   transition:
     background var(--dur) var(--ease),
     padding-left var(--dur) var(--ease);
 }
 .nt-index-row:hover {
-  background: color-mix(in oklch, var(--paper) 62%, transparent);
-  padding-left: clamp(18px, 2.4vw, 28px);
+  background: var(--sheet);
+  padding-left: clamp(16px, 2.2vw, 26px);
+}
+.nt-index-no {
+  flex: none;
 }
 .nt-index-label {
   flex: none;
-  min-width: 8.5ch;
-  font-size: clamp(1.125rem, 1.9vw, 1.4375rem);
-  font-weight: 600;
-  letter-spacing: -0.018em;
+  min-width: 9ch;
+  font-size: clamp(1.0625rem, 1.7vw, 1.3125rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 .nt-index-makes {
@@ -788,11 +1115,16 @@ body {
   min-width: 0;
   font-size: 0.9375rem;
   line-height: 1.5;
-  color: var(--ink-soft);
+  color: var(--ink-2);
+}
+/* Which blocks that bench's document actually uses. The whole reason the seven
+   pages exist is that the work on them differs, so the register says how. */
+.nt-index-uses {
+  flex: none;
 }
 .nt-index-arrow {
   flex: none;
-  color: var(--ink-faint);
+  color: var(--ink-3);
   transition:
     transform var(--dur) var(--ease),
     color var(--dur) var(--ease);
@@ -802,53 +1134,48 @@ body {
   color: var(--ink);
 }
 
-/* ---- Closing ------------------------------------------------------------
-   The deeper sage, once, at the end. The page has been getting lighter under
-   the sheet the whole way down; this is the desk again with nothing on it. */
+/* ---- Closing ------------------------------------------------------------ */
 .nt-close {
-  background: var(--field-deep);
-  border-top: 1px solid var(--field-rule);
-  text-align: center;
+  border-top: 1px solid var(--rule);
+  padding-block: clamp(64px, 9vw, 112px);
+}
+.nt-close-in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
 }
 .nt-close .nt-h2 {
-  margin-inline: auto;
-  max-width: 18ch;
-}
-.nt-close .nt-h2-note {
-  margin-inline: auto;
+  max-width: 16ch;
 }
 
-/* ---- Footer ------------------------------------------------------------- */
+/* ---- Footer -------------------------------------------------------------
+   The site's own title block. Same furniture as the sheets, because the page is
+   a sheet too. */
 .nt-footer {
-  background: var(--field-deep);
-  border-top: 1px solid var(--field-rule);
+  border-top: 1px solid var(--frame);
+  background: var(--sheet);
 }
 .nt-footer-in {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding-block: 30px;
+  gap: 20px;
+  padding-block: 24px;
 }
 .nt-footer-mark {
   color: var(--brand);
 }
-.nt-footer-meta {
-  font-family: var(--font-geist-mono), ui-monospace, monospace;
-  font-size: 11px;
-  letter-spacing: var(--tracking-meta);
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
 .nt-footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 18px;
+  gap: 20px;
 }
 .nt-footer-link {
   font-size: 14px;
-  color: var(--ink-soft);
+  color: var(--ink-2);
   transition: color var(--dur-fast) var(--ease);
 }
 .nt-footer-link:hover {
@@ -860,9 +1187,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
   font-size: 14px;
-  color: var(--ink-soft);
+  color: var(--ink-2);
   transition: color var(--dur-fast) var(--ease);
 }
 .nt-back:hover {
@@ -876,29 +1203,30 @@ body {
 }
 
 /* ---- Assembly -----------------------------------------------------------
-   Each block of the page arrives a beat after the one above it, which reads as
-   the document being written rather than as a picture being revealed. That
+   Each block of the document arrives a beat after the one above it, which reads
+   as the page being written rather than as a picture being revealed. That
    difference is the whole reason for doing it. Auto-playing, never gated on a
    scroll position or a class — a reveal that waits for an event it may never
    get ships blank. */
 .nt-sheet-page > * {
-  margin-block: 7px;
+  margin-block: 8px;
   animation: nt-line-in var(--dur-slow) var(--ease) backwards;
 }
 @keyframes nt-line-in {
   from {
     opacity: 0;
-    transform: translateY(7px);
+    transform: translateY(6px);
   }
 }
-.nt-sheet-page > :nth-child(1) { animation-delay: 220ms; }
-.nt-sheet-page > :nth-child(2) { animation-delay: 300ms; }
-.nt-sheet-page > :nth-child(3) { animation-delay: 380ms; }
-.nt-sheet-page > :nth-child(4) { animation-delay: 460ms; }
-.nt-sheet-page > :nth-child(5) { animation-delay: 540ms; }
-.nt-sheet-page > :nth-child(6) { animation-delay: 620ms; }
-.nt-sheet-page > :nth-child(7) { animation-delay: 700ms; }
-.nt-sheet-page > :nth-child(8) { animation-delay: 780ms; }
+.nt-sheet-page > :nth-child(1) { animation-delay: 200ms; }
+.nt-sheet-page > :nth-child(2) { animation-delay: 280ms; }
+.nt-sheet-page > :nth-child(3) { animation-delay: 360ms; }
+.nt-sheet-page > :nth-child(4) { animation-delay: 440ms; }
+.nt-sheet-page > :nth-child(5) { animation-delay: 520ms; }
+.nt-sheet-page > :nth-child(6) { animation-delay: 600ms; }
+.nt-sheet-page > :nth-child(7) { animation-delay: 680ms; }
+.nt-sheet-page > :nth-child(8) { animation-delay: 760ms; }
+.nt-sheet-page > :nth-child(9) { animation-delay: 840ms; }
 
 /* The words come first, and only once. */
 .nt-hero-say > * {
@@ -907,6 +1235,7 @@ body {
 .nt-hero-say > :nth-child(1) { animation-delay: 40ms; }
 .nt-hero-say > :nth-child(2) { animation-delay: 110ms; }
 .nt-hero-say > :nth-child(3) { animation-delay: 180ms; }
+.nt-hero-say > :nth-child(4) { animation-delay: 250ms; }
 @keyframes nt-rise {
   from {
     opacity: 0;
@@ -914,17 +1243,57 @@ body {
   }
 }
 
+/* The dimension lines are drawn after the sheet they measure, the way they
+   would be added to a finished drawing. */
+.nt-dim {
+  animation: nt-fade var(--dur-slow) var(--ease) 900ms backwards;
+}
+@keyframes nt-fade {
+  from {
+    opacity: 0;
+  }
+}
+
 /* ---- Narrow -------------------------------------------------------------
    The sheet is a fixed 600 document pixels wide, so below the point where it
-   fits it has to shrink rather than reflow — the line breaks are part of the
-   picture. */
-@media (max-width: 980px) {
-  .nt-moment,
-  .nt-moment.is-flipped {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 26px;
+   fits it shrinks rather than reflowing. Each step is chosen so the sheet plus
+   its gutters clears the narrow end of its own range. */
+@media (max-width: 1180px) {
+  .nt-sheet {
+    --page-scale: 0.84;
+    --page-h: 560px;
   }
-  .nt-moment.is-flipped .nt-moment-say {
+}
+
+@media (max-width: 1040px) {
+  .nt-hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(44px, 7vw, 72px);
+  }
+  .nt-h1 {
+    max-width: 12ch;
+  }
+  .nt-legend {
+    max-width: 46ch;
+  }
+  .nt-sheet {
+    --page-scale: 0.9;
+    --page-h: 600px;
+  }
+  /* Stacked, the sheet has the full column: the vertical dimension would run
+     into the gutter, so only the span across the top is kept. */
+  .nt-dim-v {
+    display: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .nt-friction,
+  .nt-friction.is-flipped {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  .nt-friction.is-flipped .nt-friction-say {
     order: 0;
   }
 }
@@ -932,28 +1301,71 @@ body {
 @media (max-width: 720px) {
   .nt-index-row {
     flex-wrap: wrap;
-    gap: 4px 20px;
+    gap: 4px 16px;
   }
   .nt-index-label {
     min-width: 0;
+    flex: 1 1 auto;
+  }
+  .nt-index-uses {
     flex: 1 1 100%;
+    order: 3;
+  }
+  .nt-section-head {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .nt-section-no {
+    padding-top: 0;
   }
 }
 
-@media (max-width: 640px) {
-  .nt-nav-in {
-    height: 64px;
+@media (max-width: 680px) {
+  .nt-sheet {
+    --page-scale: 0.72;
+    --page-h: 470px;
   }
-  .nt-desk-back {
+}
+
+@media (max-width: 540px) {
+  .nt-nav-in {
+    height: 55px;
+  }
+  .nt-sheet {
+    --page-scale: 0.6;
+    --page-h: 400px;
+  }
+  /* At this size the figures are bigger than the run they annotate. */
+  .nt-dim-h {
+    display: none;
+  }
+  /* Four cells in a 300px strip is four ellipses. The scale and the sheet
+     number are the two worth keeping. */
+  .nt-tb-cell.is-optional {
     display: none;
   }
 }
 
+@media (max-width: 400px) {
+  .nt-sheet {
+    --page-scale: 0.48;
+    --page-h: 330px;
+  }
+}
+
+@media (max-width: 340px) {
+  .nt-sheet {
+    --page-scale: 0.42;
+    --page-h: 300px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  /* The stagger is the one thing that must not simply run faster: eight blocks
-     arriving at once from 7px below is a flinch. They just appear. */
+  /* The stagger is the one thing that must not simply run faster: nine blocks
+     arriving at once from 6px below is a flinch. They just appear. */
   .nt-sheet-page > *,
-  .nt-hero-say > * {
+  .nt-hero-say > *,
+  .nt-dim {
     animation: none !important;
   }
   .nt-stream-head::after {

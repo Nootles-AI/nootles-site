@@ -61,6 +61,10 @@ export function Nav() {
   );
 }
 
+/* The site's own title block, stamped the way every sheet on it is stamped.
+   This is where "zero friction" lives: as a drawing's annotation rather than as
+   a slogan, which is the difference between stating a fact about the thing and
+   selling it back to the reader. */
 export function Footer() {
   return (
     <footer className="nt-footer">
@@ -68,7 +72,7 @@ export function Footer() {
         <Link className="nt-footer-mark" href="/" aria-label={`${site.name} — home`}>
           <Wordmark height={19} width="auto" />
         </Link>
-        <p className="nt-footer-meta">Made for thinking things through</p>
+        <p className="nt-meta nt-stamp">Zero friction</p>
         <nav className="nt-footer-links" aria-label="Footer">
           <a className="nt-footer-link" href={site.appUrl}>
             Go to app

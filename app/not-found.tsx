@@ -7,9 +7,11 @@ export default function NotFound() {
       <Nav />
       <main className="nt-hero nt-shell">
         <div className="nt-hero-say">
-          <h1 className="nt-h1">This page isn&rsquo;t one of ours.</h1>
+          <span className="nt-meta nt-stamp">Sheet not in this set</span>
+          <h1 className="nt-h1">Nothing drawn here.</h1>
           <p className="nt-lede">
-            Nothing here. The ones that do exist are all a click away.
+            This page isn&rsquo;t one of ours. The ones that are are all a click
+            away.
           </p>
           <div className="nt-hero-act">
             <Link className="nt-cta is-quiet" href="/">

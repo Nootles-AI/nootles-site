@@ -81,7 +81,7 @@ export function DiagramView({ diagram, id }: { diagram: Diagram; id: string }) {
           style={{ left: n.x, top: n.y, width: n.w, height: n.h }}
         >
           <span className="nt-node-text">{n.label}</span>
-          {n.note ? <span className="nt-node-note">{n.note}</span> : null}
+          {n.note ? <span className="nt-node-note nt-meta">{n.note}</span> : null}
         </div>
       ))}
 
@@ -91,7 +91,7 @@ export function DiagramView({ diagram, id }: { diagram: Diagram; id: string }) {
         return (
           <span
             key={`l-${e.from}-${e.to}-${i}`}
-            className="nt-edge-label"
+            className="nt-edge-label nt-meta"
             style={{ left: mid.x, top: mid.y }}
           >
             {e.label}

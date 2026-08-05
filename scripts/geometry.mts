@@ -10,7 +10,18 @@
    Run: node scripts/geometry.ts */
 
 import { audiences, baseline, type Audience } from "../content/audiences.ts";
-import { edgePath, nodeById, type Diagram, type Node } from "../lib/doc.ts";
+import {
+  chartGeometry,
+  edgePath,
+  nodeById,
+  type Chart,
+  type Diagram,
+  type Node,
+} from "../lib/doc.ts";
+
+/* The document is laid out at 600 document pixels wide with 34px margins, so
+   this is the width every drawing on a sheet has to live inside. */
+const MEASURE = 532;
 
 const problems: string[] = [];
 const fail = (where: string, msg: string) => problems.push(`${where}: ${msg}`);
@@ -41,6 +52,15 @@ function anchorsOf(a: Node, b: Node) {
 }
 
 function checkDiagram(where: string, d: Diagram) {
+  if (d.w > MEASURE) {
+    fail(where, `diagram is ${d.w}px wide, past the ${MEASURE} measure`);
+  }
+
+  /* One filled node per diagram: it is where the eye is meant to land, and two
+     of them means it lands nowhere. */
+  const filled = d.nodes.filter((n) => n.fill).length;
+  if (filled > 1) fail(where, `${filled} filled nodes — only one may be the point`);
+
   const ids = new Set<string>();
   for (const n of d.nodes) {
     if (ids.has(n.id)) fail(where, `duplicate node id "${n.id}"`);
@@ -96,6 +116,33 @@ function checkDiagram(where: string, d: Diagram) {
   }
 }
 
+/* A chart is laid out from its numbers, so what can go wrong is the numbers:
+   a bar taller than the frame, a mark pointing at a point that isn't there, a
+   value that would divide by nothing. */
+function checkChart(where: string, c: Chart) {
+  if (!c.points.length) {
+    fail(where, "chart has no points");
+    return;
+  }
+  if (c.w > MEASURE) fail(where, `chart is ${c.w}px wide, past the ${MEASURE} measure`);
+  if (c.mark !== undefined && (c.mark < 0 || c.mark >= c.points.length)) {
+    fail(where, `chart marks point ${c.mark}, which does not exist`);
+  }
+  for (const p of c.points) {
+    if (!Number.isFinite(p.value) || p.value < 0) {
+      fail(where, `point "${p.label}" has a value of ${p.value}`);
+    }
+  }
+
+  const g = chartGeometry(c);
+  for (const [i, b] of g.bars.entries()) {
+    if (b.y < 0 || b.h < 0 || b.x + b.w > c.w + 0.5) {
+      fail(where, `bar ${i} escapes the ${c.w}x${c.h} frame`);
+    }
+  }
+  if (g.path.includes("NaN")) fail(where, "chart produced a broken path");
+}
+
 function checkAudience(a: Audience) {
   const where = a.slug || "(home)";
 
@@ -106,9 +153,46 @@ function checkAudience(a: Audience) {
     fail(where, `lede is ${a.sub.length} chars — too long for the fold`);
   }
   if (!a.doc.alt) fail(where, "document has no caption");
+  if (!a.label) fail(where, "no label for the register and the title block");
+
+  /* The amber caret means the model is working. Two of them on one page would
+     mean it is working in two places at once, which is not a thing it does. */
+  const streaming = a.doc.blocks.filter(
+    (b) => (b.kind === "text" || b.kind === "code") && b.streaming,
+  ).length;
+  if (streaming > 1) {
+    fail(where, `${streaming} blocks are streaming — the model works in one place`);
+  }
 
   a.doc.blocks.forEach((b, i) => {
-    if (b.kind === "diagram") checkDiagram(`${where} block ${i}`, b.diagram);
+    const at = `${where} block ${i}`;
+    switch (b.kind) {
+      case "diagram":
+        checkDiagram(at, b.diagram);
+        break;
+      case "chart":
+        checkChart(at, b.chart);
+        break;
+      case "table": {
+        if (!b.head.length) fail(at, "table has no columns");
+        for (const [j, row] of b.rows.entries()) {
+          if (row.length !== b.head.length) {
+            fail(at, `row ${j} has ${row.length} cells for ${b.head.length} columns`);
+          }
+        }
+        for (const n of b.numeric ?? []) {
+          if (n < 0 || n >= b.head.length) fail(at, `numeric column ${n} does not exist`);
+        }
+        break;
+      }
+      case "code":
+        if (!b.lines.length) fail(at, "code block has no lines");
+        if (!b.lang) fail(at, "code block names no language");
+        break;
+      case "math":
+        if (!b.expr.length) fail(at, "maths block has no expression");
+        break;
+    }
   });
 }
 
@@ -117,9 +201,13 @@ function checkAudience(a: Audience) {
 const slugs = new Set(audiences.map((a) => a.slug));
 if (slugs.size !== audiences.length) problems.push("duplicate audience slugs");
 
-const diagrams = [baseline, ...audiences].flatMap((a) =>
-  a.doc.blocks.filter((b) => b.kind === "diagram"),
-);
+const pages = [baseline, ...audiences];
+const tally = new Map<string, number>();
+for (const a of pages) {
+  for (const b of a.doc.blocks) {
+    tally.set(b.kind, (tally.get(b.kind) ?? 0) + 1);
+  }
+}
 
 if (problems.length) {
   console.log(`${problems.length} problem(s):\n`);
@@ -127,6 +215,7 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log(
-  `${1 + audiences.length} pages, ${diagrams.length} diagrams — geometry clean.`,
-);
+const drawn = ["diagram", "chart", "table", "code", "math"]
+  .map((k) => `${tally.get(k) ?? 0} ${k}`)
+  .join(", ");
+console.log(`${pages.length} pages — ${drawn} — geometry clean.`);

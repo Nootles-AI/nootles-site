@@ -48,34 +48,42 @@ const ratio = (a, b) => {
 };
 
 const T = {
-  // The environment: a sage desk. Hue 140, a touch cooler and greener than the
-  // mark so the mark still reads as the saturated thing on it.
-  field: [0.935, 0.028, 140],
-  fieldDeep: [0.885, 0.04, 140],
-  fieldEdge: [0.845, 0.045, 140],
+  // The ground: drafting stock with a grid printed on it, and the white sheets
+  // that lie on top of it.
+  paper: [0.981, 0.004, 140],
+  sheet: [1, 0, 0],
+  sunken: [0.968, 0.004, 140],
 
-  // Paper. The sheets are the product's own surface, so these are the app's
-  // values verbatim.
-  paper: [1, 0, 90],
-  paperSunken: [0.975, 0.002, 90],
+  // The printed grid. Non-text: it needs only to be seen.
+  grid: [0.936, 0.019, 140],
+  gridMajor: [0.889, 0.026, 140],
 
-  // Ink.
-  ink: [0.25, 0.005, 90],
-  inkSoft: [0.43, 0.032, 140], // secondary text ON SAGE: the field's own hue
-  inkFaint: [0.55, 0.03, 140], // non-text only
-  paperMuted: [0.535, 0.004, 90], // the app's muted, only ever on paper
+  // Ink. One ramp, because everything now sits on paper or on a sheet.
+  ink: [0.22, 0.004, 140],
+  ink2: [0.47, 0.006, 140], // secondary text
+  ink3: [0.65, 0.008, 140], // non-text only: ticks, markers, arrowheads
 
-  // Identity.
+  // Drawn lines.
+  rule: [0.855, 0.009, 140],
+  ruleStrong: [0.72, 0.011, 140],
+  frame: [0.42, 0.006, 140],
+
+  // Identity: the app's mark, verbatim.
   brand: [0.592, 0.049, 136],
-  brandInk: [0.44, 0.058, 138],
 
-  // Meaning: AI activity, and nothing else.
+  // Meaning: the model at work, and nothing else.
   accent: [0.542, 0.145, 75],
   accentSoft: [0.716, 0.116, 75],
 
-  // Lines.
-  paperBorder: [0.93, 0.003, 90],
-  fieldRule: [0.855, 0.036, 140],
+  // Changes waiting to be answered.
+  diffAdd: [0.5, 0.098, 148],
+  diffAddBg: [0.958, 0.026, 148],
+  diffDel: [0.52, 0.118, 25],
+  diffDelBg: [0.955, 0.021, 25],
+
+  // Canvas.
+  shapeLine: [0.79, 0.006, 140],
+  edgeLine: [0.66, 0.007, 140],
 };
 
 const rgb = Object.fromEntries(
@@ -90,24 +98,50 @@ for (const [k, v] of Object.entries(T)) {
 
 // [foreground, background, minimum required, what it is]
 const pairs = [
-  ["ink", "field", 4.5, "headline + body on the sage field"],
-  ["inkSoft", "field", 4.5, "secondary copy on the sage field"],
-  ["ink", "fieldDeep", 4.5, "text on the deeper sage band"],
-  ["inkSoft", "fieldDeep", 4.5, "secondary on the deeper sage band"],
-  ["ink", "paper", 4.5, "document text on paper"],
-  ["paperMuted", "paper", 4.5, "document secondary on paper"],
-  ["paperMuted", "paperSunken", 4.5, "document secondary in a well"],
-  ["paper", "ink", 4.5, "the CTA: paper on graphite"],
-  ["brand", "field", 3, "the mark on the field (mark, not text)"],
-  ["brand", "paper", 3, "the mark on paper (mark, not text)"],
-  ["brandInk", "field", 4.5, "brand-toned text on the field"],
-  ["accent", "paper", 4.5, "AI activity on paper"],
+  // Text on the gridded ground. The claim and the legend are written straight
+  // onto the paper, so this is the pair the hero lives or dies on.
+  ["ink", "paper", 4.5, "the claim + body on the paper"],
+  ["ink2", "paper", 4.5, "secondary copy on the paper"],
+  // Worst case for anything written on the paper: it lands on a major grid
+  // line rather than between two. Measured because it is where the type
+  // actually sits, not where it would be convenient to measure it.
+  ["ink", "gridMajor", 4.5, "the claim where it crosses a printed grid line"],
+  ["ink2", "gridMajor", 4.5, "secondary copy crossing a grid line"],
+
+  // Text on a sheet.
+  ["ink", "sheet", 4.5, "document text on a sheet"],
+  ["ink2", "sheet", 4.5, "document secondary on a sheet"],
+  ["ink2", "sunken", 4.5, "code and wells on a sheet"],
+  ["sheet", "ink", 4.5, "the CTA: white on graphite"],
+  ["sheet", "frame", 4.5, "reversed out of a frame line"],
+
+  // Identity. A mark, so 3:1 — and it is never allowed to carry a sentence.
+  ["brand", "paper", 3, "the mark on the paper (mark, not text)"],
+  ["brand", "sheet", 3, "the mark on a sheet (mark, not text)"],
+
+  // Meaning.
+  ["accent", "sheet", 4.5, "the model at work, on a sheet"],
   // The graphical object here is the caret bar, drawn in --accent and measured
   // on the line above. --accent-soft is only ever the halo bled around it via
   // box-shadow, so 1.4.11 does not reach it. Listed to keep it in view.
-  ["accentSoft", "paper", 1, "the streaming glow (decoration around the bar)"],
-  ["fieldRule", "field", 1.2, "hairline on the field (needs only to be seen)"],
-  ["paperBorder", "paper", 1.05, "hairline on paper"],
+  ["accentSoft", "sheet", 1, "the streaming glow (decoration around the bar)"],
+
+  // Changes under review. Both are real text on their own tint.
+  ["diffAdd", "diffAddBg", 4.5, "an inserted line"],
+  ["diffDel", "diffDelBg", 4.5, "a struck-through line"],
+
+  // Lines and marks. These carry no text, so they need only to be visible —
+  // except the grid, which has type sitting directly on top of it and is
+  // therefore held to being faint rather than merely seen.
+  ["grid", "paper", 1.02, "the fine printed grid"],
+  ["gridMajor", "paper", 1.1, "the heavier fifth grid line"],
+  ["rule", "paper", 1.15, "a construction line on the paper"],
+  ["rule", "sheet", 1.2, "a frame line on a sheet"],
+  ["ruleStrong", "sheet", 1.8, "a heavier rule on a sheet"],
+  ["frame", "paper", 3, "the sheet's trim line"],
+  ["ink3", "paper", 3, "dimension ticks and figures (graphical)"],
+  ["shapeLine", "sheet", 1.5, "a shape outline on the canvas"],
+  ["edgeLine", "sheet", 2.5, "a connector on the canvas"],
 ];
 
 console.log("\n── pairs ──────────────────────────────────");
