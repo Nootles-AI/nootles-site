@@ -22,10 +22,14 @@
   --sheet: oklch(1 0 0);
   --sunken: oklch(0.968 0.004 140);
 
-  /* The printed grid. Non-text, so it needs only to be seen: fine lines every
-     20 document pixels, a heavier one every fifth. */
-  --grid: oklch(0.936 0.019 140);
-  --grid-major: oklch(0.889 0.026 140);
+  /* The printed grid: fine lines every 20 document pixels, a heavier one every
+     fifth. It is a ground, not a graphic — meant to be felt underneath the page
+     rather than read, so both are kept a hair off the paper (1.06:1 and 1.16:1)
+     and the pair is scaled together. Lightening only the fine lines would leave
+     the heavy ones alone on the surface as a 100px lattice, which is a louder
+     thing than the texture it replaced. */
+  --grid: oklch(0.962 0.012 140);
+  --grid-major: oklch(0.934 0.017 140);
 
   /* ---- Ink -------------------------------------------------------------
      One ramp, because everything now sits on paper. */

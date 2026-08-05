@@ -54,9 +54,9 @@ const T = {
   sheet: [1, 0, 0],
   sunken: [0.968, 0.004, 140],
 
-  // The printed grid. Non-text: it needs only to be seen.
-  grid: [0.936, 0.019, 140],
-  gridMajor: [0.889, 0.026, 140],
+  // The printed grid. Non-text: it needs only to be felt.
+  grid: [0.962, 0.012, 140],
+  gridMajor: [0.934, 0.017, 140],
 
   // Ink. One ramp, because everything now sits on paper or on a sheet.
   ink: [0.22, 0.004, 140],
@@ -96,7 +96,14 @@ for (const [k, v] of Object.entries(T)) {
   console.log(`${g} ${k.padEnd(13)} oklch(${v.join(" ")})`.padEnd(46), hex(rgb[k]));
 }
 
-// [foreground, background, minimum required, what it is]
+/* [foreground, background, minimum required, what it is, optional maximum]
+
+   Almost everything here only has a floor: text cannot be too legible. The
+   printed grid is the exception and has both. It failed once by being too
+   strong — a 20px lattice at 1.14:1 with a 100px lattice at 1.31:1 over it read
+   as a graphic competing with the page rather than as the ground under it, and
+   nothing in this file objected because contrast checkers only ever look down.
+   The ceiling is the other half of that judgement, written down. */
 const pairs = [
   // Text on the gridded ground. The claim and the legend are written straight
   // onto the paper, so this is the pair the hero lives or dies on.
@@ -133,8 +140,8 @@ const pairs = [
   // Lines and marks. These carry no text, so they need only to be visible —
   // except the grid, which has type sitting directly on top of it and is
   // therefore held to being faint rather than merely seen.
-  ["grid", "paper", 1.02, "the fine printed grid"],
-  ["gridMajor", "paper", 1.1, "the heavier fifth grid line"],
+  ["grid", "paper", 1.03, "the fine printed grid", 1.09],
+  ["gridMajor", "paper", 1.1, "the heavier fifth grid line", 1.2],
   ["rule", "paper", 1.15, "a construction line on the paper"],
   ["rule", "sheet", 1.2, "a frame line on a sheet"],
   ["ruleStrong", "sheet", 1.8, "a heavier rule on a sheet"],
@@ -146,12 +153,15 @@ const pairs = [
 
 console.log("\n── pairs ──────────────────────────────────");
 let failed = 0;
-for (const [fg, bg, min, what] of pairs) {
+for (const [fg, bg, min, what, max] of pairs) {
   const r = ratio(rgb[fg], rgb[bg]);
-  const ok = r >= min;
-  if (!ok) failed++;
+  const under = r < min;
+  const over = max !== undefined && r > max;
+  if (under || over) failed++;
+  const bound = max !== undefined ? `${min}–${max}` : `min ${min}`;
+  const verdict = under ? "FAINT" : over ? "LOUD" : "PASS";
   console.log(
-    `${ok ? "PASS" : "FAIL"}  ${r.toFixed(2).padStart(6)}:1  (min ${String(min).padEnd(4)})  ${what}`,
+    `${verdict.padEnd(5)} ${r.toFixed(2).padStart(6)}:1  (${bound.padEnd(8)})  ${what}`,
   );
 }
 
