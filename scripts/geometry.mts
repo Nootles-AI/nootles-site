@@ -9,10 +9,11 @@
 
    Run: node scripts/geometry.ts */
 
-import { audiences, baseline, type Audience } from "../content/audiences.ts";
+import { audiences, baseline, take, type Audience } from "../content/audiences.ts";
 import {
   chartGeometry,
   edgePath,
+  moveNode,
   nodeById,
   type Chart,
   type Diagram,
@@ -205,6 +206,51 @@ function checkAudience(a: Audience) {
 }
 
 [baseline, ...audiences].forEach(checkAudience);
+
+/* The home sheet is written rather than printed, which puts two more things
+   within reach of being silently wrong.
+
+   The first is the drawing: the take ends by picking a box up and putting it
+   down somewhere else, and a drawing that is sound where it was authored can
+   double an edge back where it lands. That is a bug you would only ever find by
+   watching the loop for nine seconds and happening to look at the right corner.
+
+   The second is the pointing. The recording names two blocks of the document by
+   index — the line it finishes and the drawing it asks for — and a block
+   inserted above either of them would leave the take writing over the wrong
+   part of the page, with nothing anywhere to say so. */
+function checkTake() {
+  const where = "(home) the take";
+
+  const drawn = baseline.doc.blocks[take.draws];
+  if (drawn?.kind !== "diagram") {
+    fail(where, `draws block ${take.draws}, which is a ${drawn?.kind ?? "missing block"}`);
+  } else if (!drawn.diagram.nodes.some((n) => n.id === take.dragged)) {
+    fail(where, `drags "${take.dragged}", which is not a node in the drawing`);
+  } else {
+    checkDiagram(`${where}, after the edit`, moveNode(drawn.diagram, take.dragged, take.dx));
+  }
+
+  const line = baseline.doc.blocks[take.finishes];
+  if (line?.kind !== "text") {
+    fail(where, `finishes block ${take.finishes}, which is a ${line?.kind ?? "missing block"}`);
+  } else if (line.text !== take.line + take.completion) {
+    fail(where, "finishes a line the page does not end up carrying");
+  }
+
+  /* The pointer is driven to the end of a line and then to a shape. Both are
+     measured at run time, but the drawing has to be somewhere a pointer can
+     plausibly reach — an edit that moved a box off its own canvas would leave
+     the cursor holding nothing. */
+  if (drawn?.kind === "diagram") {
+    const node = drawn.diagram.nodes.find((n) => n.id === take.dragged);
+    if (node && (node.x + take.dx < 0 || node.x + take.dx + node.w > drawn.diagram.w)) {
+      fail(where, `moves "${take.dragged}" ${take.dx}px, off its own canvas`);
+    }
+  }
+}
+
+checkTake();
 
 const slugs = new Set(audiences.map((a) => a.slug));
 if (slugs.size !== audiences.length) problems.push("duplicate audience slugs");

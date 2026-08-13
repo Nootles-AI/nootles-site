@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AudienceIndex } from "@/components/AudienceIndex";
 import { ArrowLeft, Footer, GoToApp, Nav } from "@/components/Chrome";
 import { Frictions } from "@/components/Frictions";
+import { Recording } from "@/components/Recording";
 import { Sheet } from "@/components/Sheet";
 import { audiences, type Audience } from "@/content/audiences";
 
@@ -68,7 +69,13 @@ export function Landing({ audience }: { audience: Audience }) {
               sheet={sheetNo}
               across="600 px — one measure"
               down="One page"
-            />
+            >
+              {/* Sheet one is written in front of you; the seven benches are
+                  printed. The claim being made at the fold is that the model
+                  writes, draws and edits the page — which is a thing that
+                  happens, and so a thing that has to be shown happening. */}
+              {isSegment ? null : <Recording />}
+            </Sheet>
           </div>
         </section>
 

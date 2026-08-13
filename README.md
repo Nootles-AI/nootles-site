@@ -17,13 +17,22 @@ document under it — and the document is the argument, so that is the only diff
 worth having.
 
 ```
-app/                    routes: / and /for/[audience] (all static)
-components/Sheet.tsx    the picture of a page
-components/Diagram.tsx  outlines + connectors in SVG, labels in boxes over it
-content/audiences.ts    the eight pages, and the eight documents
-lib/doc.ts              the document model and the edge router
-scripts/                the two checks that are decidable
+app/                      routes: / and /for/[audience] (all static)
+components/Sheet.tsx      the drawing sheet: frame, title block, caption
+components/Block.tsx      one block of a document, set the way the editor sets it
+components/Recording.tsx  sheet one, written rather than printed
+components/Diagram.tsx    outlines + connectors in SVG, labels in boxes over it
+content/audiences.ts      the eight pages, the eight documents, and the take
+lib/doc.ts                the document model and the edge router
+scripts/                  the two checks that are decidable
 ```
+
+Sheet one is the exception to "one composition": it is the same document as the
+others, in the same blocks at the same measure, but it writes itself in front of
+you on a loop — a line finished and accepted with Tab, a sentence read as a
+drawing, and that drawing dragged into shape. The beats live in `take` beside the
+document they write, and `check:geometry` proves the two still point at each
+other. Anyone who has asked not to be moved gets the last frame instead.
 
 ## The one rule
 

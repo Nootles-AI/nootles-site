@@ -24,6 +24,55 @@ export type Audience = {
   doc: Doc;
 };
 
+/* ---- The take -----------------------------------------------------------
+   The home sheet is the one page here that is written rather than printed.
+
+   A still document can show that prose and drawings sit on one surface. It
+   cannot show the three things that are actually the product — a line being
+   finished for you, a sentence turning into a diagram, and that diagram being
+   dragged into shape a second later — so the home page writes itself instead,
+   with a pointer doing the work, on a loop.
+
+   A launch plan rather than anything closer to the machine: the fold is the one
+   place that can assume nothing about who is reading it, and a page about retry
+   budgets tells somebody who does not write services that this is not for them.
+   Everyone has had to say what has to be true before a thing ships.
+
+   These are the parts of the page the recording has to name. Everything else it
+   simply renders, from `baseline.doc` below, which is what the take ends on. */
+export const take = {
+  /** The line the model finishes, and what it offers for it. Held apart because
+      one is in ink while the other is still only an offer; joined, they are
+      block `finishes` of the document below. */
+  line: "The date we are working back from is",
+  completion:
+    " the last Thursday in March, which leaves three clear weeks of buffer.",
+
+  /** The sentence the next line is asked for in — answered with a block rather
+      than with words, which is the second thing a screenshot cannot show. */
+  brief: "draw the path from draft to ship, and where rework comes from",
+
+  /** The box picked up afterwards, and how far it goes. Rework arrives at the
+      end of the row, under Ship, where the connector has to run diagonally to
+      reach it and reads as though shipping is what produces rework. Dragged one
+      step left it sits under the step it actually falls out of, and the
+      connector straightens into a drop. The brief asked where rework comes from;
+      the drag is the answer to it.
+
+      A demonstration edit that left the picture worse would be showing off the
+      drag rather than the point of it, so this one is checked: `geometry.mts`
+      proves both positions route soundly. */
+  dragged: "rework",
+  dx: -192,
+
+  /** Which blocks of `baseline.doc` the first and third beats happen in.
+      `scripts/geometry.mts` checks that they still point at what they claim to,
+      so a block inserted above cannot quietly desynchronise the recording from
+      the page it is supposed to be writing. */
+  finishes: 4,
+  draws: 7,
+};
+
 /** The baseline page. Not in the register — it is the sheet the register sits on. */
 export const baseline: Audience = {
   slug: "",
@@ -32,42 +81,72 @@ export const baseline: Audience = {
   headline: "Write with pure momentum.",
   sub: "Prose, diagrams, code, maths and tables in one document — and an AI that reads and edits all of it, in front of you.",
   doc: {
-    alt: "A page weighing two ways to build the same thing: the decision drawn as a diagram, then the same two options ruled up as a table underneath it.",
+    alt: "A launch plan being written: the model finishes the line about the date, reads the next line as a drawing and puts one on the page — draft to review to ship — and the rework box is then dragged under the review it falls out of.",
     blocks: [
-      { kind: "title", text: "Which way to build it" },
+      { kind: "title", text: "Launch plan" },
       {
         kind: "text",
-        text: "Two ways in. The flat model ships this week and boxes us in the moment a second team asks for their own rules. The scoped one costs a fortnight.",
+        text: "What has to be true before we ship, who owns each part, and the order it has to happen in.",
       },
+      { kind: "heading", text: "Where we are" },
+      /* One line, and it has to stay one line. The drawing lands roughly 380
+         document pixels down this page and the field crops at 640, so every
+         line added above the diagram pushes the third beat — the drag, the part
+         worth watching — under the fade at the foot of the sheet. */
+      {
+        kind: "text",
+        text: "Everything in the first cut is built and behind a flag.",
+      },
+      /* Block 4 — the line the model finishes. `take.finishes` points here. */
+      { kind: "text", text: take.line + take.completion },
+      { kind: "heading", text: "How it fits together" },
+      { kind: "text", text: "The order things have to happen in:" },
+      /* Block 7 — the drawing, as the model first puts it down. `take.draws`
+         points here, and the edit at the end of the take moves Rework left by
+         `take.dx`, out from under Ship and under Review. Both positions are
+         checked by the geometry script.
+
+         Three across and one below, which is the shape this router draws
+         cleanly: every connector between two boxes on the same row is a
+         straight line, and the one connector that is not runs down a column of
+         its own. A loop back into Draft is the drawing you would reach for
+         first and it is the one thing the router cannot do — a returning edge
+         leaves the bottom box and re-enters the top row along the same centre
+         line the row's own connectors sit on, so it arrives overlapping them
+         and pointing into an arrowhead. Hence a branch, and hence the drag
+         being the thing that puts the branch where it belongs. */
       {
         kind: "diagram",
         diagram: {
           w: 532,
-          h: 220,
+          h: 178,
           nodes: [
-            { id: "q", label: "Per-team rules?", x: 191, y: 0, w: 150, h: 66, shape: "diamond" },
-            { id: "a", label: "Flat model", note: "3 days", x: 0, y: 170, w: 210, h: 50 },
-            { id: "b", label: "Scoped model", note: "2 weeks", x: 322, y: 170, w: 210, h: 50, fill: true },
+            { id: "draft", label: "Draft", x: 0, y: 4, w: 148, h: 44 },
+            { id: "review", label: "Review", x: 192, y: 4, w: 148, h: 44 },
+            { id: "ship", label: "Ship", x: 384, y: 4, w: 148, h: 44, fill: true },
+            { id: "rework", label: "Rework", x: 384, y: 130, w: 148, h: 44 },
           ],
           edges: [
-            { from: "q", to: "a", label: "no" },
-            { from: "q", to: "b", label: "yes" },
+            { from: "draft", to: "review" },
+            { from: "review", to: "ship" },
+            { from: "review", to: "rework", label: "changes", dashed: true },
           ],
         },
       },
-      { kind: "rule" },
+      { kind: "heading", text: "Who owns what" },
       {
-        kind: "table",
-        head: ["Option", "Ships in", "If a second team asks"],
-        rows: [
-          ["Flat model", "3 days", "Rewrite the store"],
-          ["Scoped model", "2 weeks", "Costs nothing"],
+        kind: "list",
+        items: [
+          "Scope and draft — Priya, by the 14th",
+          "Build and QA — the platform team",
+          "Comms and the launch note — Sam",
+          "Support handover — Ana, the week before",
         ],
       },
+      { kind: "heading", text: "What would make us stop" },
       {
         kind: "text",
-        text: "So the question isn't which is cleaner. It's whether the second team is real, and how soon",
-        streaming: true,
+        text: "Anything still in the rework loop by the Monday of launch week. We would rather move the date once than ship it twice.",
       },
     ],
   },

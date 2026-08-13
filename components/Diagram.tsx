@@ -5,10 +5,16 @@ import { edgePath, nodeById, type Diagram, type Node } from "@/lib/doc";
    label still be ordinary upright text — a clip-path would take the stroke with
    it, and rotated SVG text sets badly at this size. */
 
-function outline(n: Node) {
+function outline(n: Node, held?: string) {
   const cx = n.x + n.w / 2;
   const cy = n.y + n.h / 2;
-  const cls = n.fill ? "nt-shape is-fill" : "nt-shape";
+  const cls = [
+    "nt-shape",
+    n.fill ? "is-fill" : null,
+    n.id === held ? "is-held" : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   switch (n.shape) {
     case "ellipse":
@@ -34,7 +40,16 @@ function outline(n: Node) {
   }
 }
 
-export function DiagramView({ diagram, id }: { diagram: Diagram; id: string }) {
+export function DiagramView({
+  diagram,
+  id,
+  held,
+}: {
+  diagram: Diagram;
+  id: string;
+  /** The node currently under a pointer that is holding it down. */
+  held?: string;
+}) {
   const arrow = `nt-arrow-${id}`;
 
   return (
@@ -59,7 +74,7 @@ export function DiagramView({ diagram, id }: { diagram: Diagram; id: string }) {
           </marker>
         </defs>
 
-        {diagram.nodes.map(outline)}
+        {diagram.nodes.map((n) => outline(n, held))}
 
         {diagram.edges.map((e, i) => {
           const { d } = edgePath(nodeById(diagram, e.from), nodeById(diagram, e.to));

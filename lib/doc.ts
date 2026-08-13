@@ -203,6 +203,18 @@ export function nodeById(d: Diagram, id: string): Node {
   return n;
 }
 
+/* One box picked up and put down somewhere else.
+   Nothing else has to be told. Every connector is computed from where the boxes
+   actually are, so `edgePath` re-runs from wherever this leaves them — which is
+   why a connector re-routes while the shape is still moving rather than
+   snapping into place when it lands. */
+export function moveNode(d: Diagram, id: string, dx: number, dy = 0): Diagram {
+  return {
+    ...d,
+    nodes: d.nodes.map((n) => (n.id === id ? { ...n, x: n.x + dx, y: n.y + dy } : n)),
+  };
+}
+
 /* ---- Chart geometry -----------------------------------------------------
    Same rule the diagrams run on: the shape is computed from the data, never
    hand-placed, so a number can be changed and the picture stays honest. Kept

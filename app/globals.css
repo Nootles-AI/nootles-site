@@ -894,6 +894,189 @@ body {
   pointer-events: none;
 }
 
+/* ---- The take -----------------------------------------------------------
+   Sheet one is written rather than printed.
+
+   Nothing below restyles the document. The page is the same blocks in the same
+   classes at the same measure as every other sheet — all this adds is the marks
+   a printed page has no use for: the offer, the key that accepts it, the slot a
+   drawing lands in, and the pointer doing the work.
+
+   The amber appears here for the same reason it appears anywhere: the model is
+   working. The suggestion head, the pulse on "Drawing…" and nothing else. A
+   pointer, a keycap and a held shape are somebody using the product, not the
+   model, so they are graphite like the rest of the page. */
+
+/* The page arrives blank and fills. The entrance stagger is a printed sheet
+   assembling itself, which is the opposite claim, so it is removed rather than
+   retimed — the take is the choreography here. */
+.nt-sheet-page.is-live {
+  transition: opacity var(--dur-slow) var(--ease);
+}
+.nt-sheet-page.is-live > * {
+  animation: none;
+}
+/* The take is over. It goes rather than cuts, so the loop reads as the same
+   page being written again and not as a screen being redrawn. */
+.nt-sheet-page.is-live.is-out {
+  opacity: 0;
+}
+
+/* The offer, and the same words a beat later in ink. The transition is on both
+   states, so what changes is the colour of one run of text rather than one run
+   of text being swapped for another. */
+.nt-ghost,
+.nt-kept {
+  transition: color var(--dur) var(--ease);
+}
+.nt-kept {
+  color: var(--ink);
+}
+
+/* Zero-width, and there only to be measured: the pointer is driven to wherever
+   the line happens to end, which depends on where the text wraps, which depends
+   on the font that actually loaded. */
+.nt-anchor {
+  position: relative;
+  display: inline-block;
+}
+
+/* Steady. The tokens have stopped arriving and the head is now only saying
+   where you would end up if you took the offer, so it stands still. */
+.nt-stream-head.is-steady::after {
+  animation: none;
+}
+
+/* The keycap already carries a 2px underside. The press spends it, which is
+   what a key does. `box-sizing` keeps the cap the same height throughout, so
+   the line it sits in does not twitch. */
+.nt-key {
+  animation: nt-fade 200ms var(--ease) backwards;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    border-bottom-width var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+.nt-key.is-press {
+  transform: translateY(1px);
+  border-bottom-width: 1px;
+  background: var(--rule);
+}
+
+/* The page makes room for the drawing rather than the drawing appearing on top
+   of the page: the block opens from nothing to its own height and everything
+   below is pushed down, which is what inserting a block does. One element, one
+   bounded reflow — the case where animating height is the honest answer rather
+   than the lazy one. */
+.nt-take-slot {
+  position: relative;
+  overflow: hidden;
+  animation: nt-take-open 340ms var(--ease) backwards;
+}
+@keyframes nt-take-open {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* Each shape as it lands. Short, and no movement: they are being placed, not
+   flown in, and four boxes sliding in from four directions is a title
+   sequence. */
+.nt-take-slot .nt-shape,
+.nt-take-slot .nt-edge,
+.nt-take-slot .nt-node-label,
+.nt-take-slot .nt-edge-label {
+  animation: nt-fade 220ms var(--ease) backwards;
+}
+
+/* What the model is doing, in the voice the site gives every other annotation
+   and in the one colour that means it is the model doing it. Stood in the foot
+   of the slot rather than the head: the drawing fills from the top row down, so
+   a label at the top would be sat on by the first box to land. */
+.nt-take-drawing {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  color: var(--accent);
+  animation: nt-pulse 1.15s var(--ease) infinite;
+}
+
+/* Held. The only thing that says a shape has left the surface is a shadow, and
+   it is the shadow the sheet already casts rather than a new one — a shape
+   picked up does not change colour. */
+.nt-shape.is-held {
+  stroke: var(--rule-strong);
+  filter: drop-shadow(0 2px 5px oklch(0.22 0.01 140 / 0.18));
+}
+
+/* The pointer. Fast and decisive between beats, because it is standing in for
+   somebody who already knows what they are doing. Everything it does is one
+   transform on one element.
+
+   The margin is reset because `.nt-sheet-page > *` gives every block on the
+   page 8px of air, and on an absolutely-positioned element that is not air, it
+   is an 8px error in every coordinate this thing is driven to. */
+.nt-take-pointer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: var(--z-base);
+  display: block;
+  margin: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 2px oklch(0.22 0.01 140 / 0.28));
+  transition: transform 260ms var(--ease);
+  animation: nt-fade 200ms var(--ease);
+}
+/* The transition is what makes a move between beats read as a dart rather than
+   a jump — and exactly what must not be running during the drag, where the
+   position is set every frame and a 260ms ease would leave the pointer trailing
+   the shape it is supposed to be holding. */
+.nt-take-pointer.is-down {
+  transition: none;
+}
+.nt-take-pointer svg {
+  display: block;
+  transform-origin: 10% 10%;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.nt-take-pointer.is-down svg {
+  transform: scale(0.84);
+}
+/* Outlined in the sheet's own white so the arrow stays readable where it
+   crosses a connector or a box. */
+.nt-take-pointer path {
+  fill: var(--ink);
+  stroke: var(--sheet);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+}
+
+/* The press itself, which the arrow alone cannot show: a ring that opens once
+   from under the tip and is gone. */
+.nt-take-pointer.is-down::after {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in oklch, var(--ink) 45%, transparent);
+  animation: nt-take-press 420ms var(--ease) forwards;
+}
+@keyframes nt-take-press {
+  from {
+    opacity: 0.9;
+    transform: scale(0.35);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
 /* ---- Sections -----------------------------------------------------------
    Separated by a construction line and a stamped number, because on this site
    the sections genuinely are a numbered sequence of sheets. No kicker over any
@@ -1468,6 +1651,19 @@ body {
     animation: none !important;
   }
   .nt-stream-head::after {
+    animation: none !important;
+  }
+  /* The take does not run at all — the component renders its last frame
+     instead, which is a finished page with a finished drawing on it. These are
+     the marks that would otherwise flicker on their way to standing still. */
+  .nt-take-slot,
+  .nt-take-slot .nt-shape,
+  .nt-take-slot .nt-edge,
+  .nt-take-slot .nt-node-label,
+  .nt-take-slot .nt-edge-label,
+  .nt-take-drawing,
+  .nt-take-pointer,
+  .nt-key {
     animation: none !important;
   }
   html {

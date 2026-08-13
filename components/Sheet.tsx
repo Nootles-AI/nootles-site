@@ -1,8 +1,6 @@
-import type { CSSProperties } from "react";
-import { ChartView } from "@/components/Chart";
-import { DiagramView } from "@/components/Diagram";
-import { MathView } from "@/components/Math";
-import { blockRegister, type Block, type Doc } from "@/lib/doc";
+import type { CSSProperties, ReactNode } from "react";
+import { renderBlock } from "@/components/Block";
+import { blockRegister, type Doc } from "@/lib/doc";
 
 /* A drawing sheet: a trim line, a lighter frame inside it, the document in the
    field between, and a title block stamped across the foot.
@@ -13,135 +11,6 @@ import { blockRegister, type Block, type Doc } from "@/lib/doc";
 
    Everything inside the frame is a picture. The caption under it is the part
    meant to be read, and it is what assistive tech gets instead. */
-
-function Tick() {
-  return (
-    <svg
-      className="nt-check-tick"
-      width="10"
-      height="10"
-      viewBox="0 0 10 10"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M2 5.2 4.1 7.4 8 2.9" />
-    </svg>
-  );
-}
-
-function renderBlock(block: Block, i: number, id: string) {
-  switch (block.kind) {
-    case "title":
-      return (
-        <h3 key={i} className="nt-doc-title">
-          {block.text}
-        </h3>
-      );
-    case "heading":
-      return (
-        <h4 key={i} className="nt-doc-heading">
-          {block.text}
-        </h4>
-      );
-    case "text":
-      return (
-        <p key={i} className={block.streaming ? "nt-doc-text is-streaming" : "nt-doc-text"}>
-          {block.text}
-          {block.streaming ? <span className="nt-stream-head" /> : null}
-        </p>
-      );
-    case "list":
-      return (
-        <ul key={i} className="nt-doc-list">
-          {block.items.map((item, j) => (
-            <li key={j}>{item}</li>
-          ))}
-        </ul>
-      );
-    case "check":
-      return (
-        <ul key={i} className="nt-doc-check">
-          {block.items.map((item, j) => (
-            <li key={j} className={item.done ? "nt-check-row is-done" : "nt-check-row"}>
-              <span className="nt-check-box">{item.done ? <Tick /> : null}</span>
-              <span className="nt-check-text">{item.text}</span>
-            </li>
-          ))}
-        </ul>
-      );
-    case "rule":
-      return <hr key={i} className="nt-doc-rule" />;
-    case "diagram":
-      return (
-        <div key={i} className="nt-doc-canvas">
-          <DiagramView diagram={block.diagram} id={`${id}-${i}`} />
-        </div>
-      );
-    case "chart":
-      return (
-        <div key={i} className="nt-doc-chart">
-          <ChartView chart={block.chart} id={`${id}-${i}`} />
-        </div>
-      );
-    case "math":
-      return <MathView key={i} expr={block.expr} result={block.result} />;
-    case "code":
-      return (
-        <div
-          key={i}
-          className={block.streaming ? "nt-doc-code is-streaming" : "nt-doc-code"}
-        >
-          <div className="nt-code-head">
-            <span className="nt-meta nt-stamp">{block.lang}</span>
-          </div>
-          <pre className="nt-code-body">
-            {block.lines.map((line, j) => (
-              <span
-                key={j}
-                className={
-                  /^\s*(\/\/|#)/.test(line) ? "nt-code-line is-note" : "nt-code-line"
-                }
-              >
-                {line || " "}
-                {block.streaming && j === block.lines.length - 1 ? (
-                  <span className="nt-stream-head" />
-                ) : null}
-              </span>
-            ))}
-          </pre>
-        </div>
-      );
-    case "table":
-      return (
-        <table key={i} className="nt-doc-table">
-          <thead>
-            <tr>
-              {block.head.map((h, j) => (
-                <th key={j} className={block.numeric?.includes(j) ? "is-num" : undefined}>
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {block.rows.map((row, j) => (
-              <tr key={j}>
-                {row.map((cell, k) => (
-                  <td key={k} className={block.numeric?.includes(k) ? "is-num" : undefined}>
-                    {cell}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      );
-  }
-}
 
 /* The title block carries what the drawing is, which blocks are on it, and its
    number in the set. The register is derived from the document, so a sheet
@@ -174,6 +43,7 @@ export function Sheet({
   down,
   scale,
   height,
+  children,
 }: {
   doc: Doc;
   id: string;
@@ -188,6 +58,10 @@ export function Sheet({
   scale?: number;
   /** Height of the field. The document carries on past it. */
   height?: string;
+  /** A page being written rather than printed, which takes the field instead of
+   *  the static one. `doc` is still what the take ends on, so the register and
+   *  the caption are derived from the real document either way. */
+  children?: ReactNode;
 }) {
   const vars = {
     ...(scale !== undefined ? { "--page-scale": String(scale) } : {}),
@@ -213,9 +87,11 @@ export function Sheet({
 
         <div className="nt-sheet" style={vars}>
           <div className="nt-sheet-field">
-            <div className="nt-sheet-page" aria-hidden="true">
-              {doc.blocks.map((b, i) => renderBlock(b, i, id))}
-            </div>
+            {children ?? (
+              <div className="nt-sheet-page" aria-hidden="true">
+                {doc.blocks.map((b, i) => renderBlock(b, i, id))}
+              </div>
+            )}
           </div>
           <TitleBlock name={name} register={blockRegister(doc)} sheet={sheet} />
         </div>
