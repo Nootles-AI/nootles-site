@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "app/globals.css"
+        ],
+        "createdAt": "2026-08-17T19:37:09.257Z",
+        "reason": "Project design system: the site is a drafting-sheet/blueprint surface by documented intent — PRODUCT.md names the printed grid as the identity, contrast.mjs enforces both a floor and a ceiling on grid-line contrast, and commit fb4a3d6 tuned it deliberately. Pre-existing code, untouched by this change."
+      }
+    ]
+  }
+}

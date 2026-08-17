@@ -11,3 +11,16 @@ export const site = {
   description:
     "Prose, diagrams, code, maths and tables in one document — and an AI that reads and edits all of it, in front of you. Nootles is where you go to work something out.",
 } as const;
+
+/* The facts the legal pages bind to, written once. Nootles Inc. is
+   incorporated in British Columbia, so the documents speak BC law and sit
+   disputes in Vancouver. The two addresses must receive mail. */
+export const legal = {
+  entity: "Nootles Inc.",
+  contact: "legal@nootles.com",
+  privacyContact: "privacy@nootles.com",
+  governingLaw:
+    "the Province of British Columbia and the federal laws of Canada that apply in it",
+  venue: "Vancouver, British Columbia",
+  effective: "17 August 2026",
+} as const;

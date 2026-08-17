@@ -80,6 +80,12 @@ export function Footer() {
           <Link className="nt-footer-link" href="/#who">
             Who it&rsquo;s for
           </Link>
+          <Link className="nt-footer-link" href="/terms">
+            Terms
+          </Link>
+          <Link className="nt-footer-link" href="/privacy">
+            Privacy
+          </Link>
         </nav>
       </div>
     </footer>

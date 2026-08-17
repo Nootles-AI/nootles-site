@@ -1384,6 +1384,87 @@ body {
   color: var(--ink);
 }
 
+/* ---- Legal --------------------------------------------------------------
+   Terms and privacy, set on the paper like everything else: one column at a
+   measure of 640 (32 grid units), sections numbered the way a sheet's notes
+   are numbered. Body text is --ink at full size — a policy set as small grey
+   print is a policy hoping not to be read, which is the opposite of the
+   posture here. Every pair this produces is already in contrast.mjs:
+   ink/paper, ink2/paper, and their grid-line worst cases. */
+.nt-legal {
+  padding-top: clamp(40px, 6vw, 80px);
+  padding-bottom: clamp(60px, 8vw, 100px);
+}
+.nt-legal-head {
+  max-width: 640px;
+}
+.nt-legal-title {
+  margin: 14px 0 0;
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  color: var(--ink);
+}
+.nt-legal-head .nt-lede {
+  max-width: 54ch;
+}
+.nt-legal-date {
+  margin-top: 24px;
+}
+.nt-legal-body {
+  max-width: 640px;
+  margin-top: clamp(40px, 5vw, 60px);
+}
+.nt-legal-section {
+  border-top: 1px solid var(--rule);
+  padding-block: 26px 34px;
+}
+.nt-legal-h {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 0;
+  font-size: 1.1875rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+}
+.nt-legal-section p {
+  margin: 14px 0 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.nt-legal-list {
+  margin: 14px 0 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 10px;
+  list-style: disc;
+}
+.nt-legal-list li {
+  padding-left: 4px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.nt-legal-list li::marker {
+  color: var(--ink-3);
+}
+.nt-legal-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--rule-strong);
+  transition: text-decoration-color var(--dur-fast) var(--ease);
+}
+.nt-legal-link:hover {
+  text-decoration-color: var(--ink);
+}
+
 /* ---- Back to the top of the segment pages ------------------------------- */
 .nt-back {
   display: inline-flex;
