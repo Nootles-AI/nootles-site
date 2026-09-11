@@ -56,7 +56,11 @@ Not the AI-SaaS landing page: no dark hero with a purple gradient, no glassmorph
 big-number metric band, no grid of identical icon cards, no "supercharge your workflow".
 Equally not the editorial-magazine escape hatch that every restrained brand now runs to
 — no display serif, no italic drop caps, no small-caps kickers over each section, no
-broadsheet rules. And not beige: the warm near-white paper aesthetic is its own cliché.
+broadsheet rules. And not beige: the paper carries a real grain now — heaviest in the
+nav, lighter everywhere else — but stays cool and near-white throughout. Texture is not
+the same choice as tint; the grain is pure black multiplied in at a sliver of opacity,
+so it adds no colour and doesn't warm the page toward the cream/parchment look this
+still rules out.
 
 ## Design Principles
 

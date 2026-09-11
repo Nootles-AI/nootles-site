@@ -67,8 +67,6 @@ export function Landing({ audience }: { audience: Audience }) {
               id={audience.slug || "home"}
               name={audience.label}
               sheet={sheetNo}
-              across="600 px — one measure"
-              down="One page"
             >
               {/* Sheet one is written in front of you; the seven benches are
                   printed. The claim being made at the fold is that the model

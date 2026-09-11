@@ -14,7 +14,8 @@ npm run build
 Eight pages, one composition. `/` speaks to anyone who plans; `/for/<slug>` says the
 same thing to one bench. What changes between them is the sentence at the top and the
 document under it — and the document is the argument, so that is the only difference
-worth having.
+worth having. `/team` and the legal pages are set outside that composition, in the
+register the site's own facts get: ruled, numbered, no document beside them.
 
 ```
 app/                      routes: / and /for/[audience] (all static)
@@ -22,7 +23,9 @@ components/Sheet.tsx      the drawing sheet: frame, title block, caption
 components/Block.tsx      one block of a document, set the way the editor sets it
 components/Recording.tsx  sheet one, written rather than printed
 components/Diagram.tsx    outlines + connectors in SVG, labels in boxes over it
+components/Team.tsx       who's behind it — founders, core team, third-party proof
 content/audiences.ts      the eight pages, the eight documents, and the take
+content/team.ts           the roster and the registration facts, as data
 lib/doc.ts                the document model and the edge router
 scripts/                  the two checks that are decidable
 ```

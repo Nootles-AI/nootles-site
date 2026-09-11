@@ -1,0 +1,36 @@
+{
+  "team": [
+    {
+      "name": "Ali Hosseini",
+      "role": "Founder & CEO",
+      "bio": "Previously: FDE on an a16z-backed founding team; BCom in Business & Computer Science from the University of British Columbia",
+      "linkedin": "https://www.linkedin.com/in/01-ali-hosseini/",
+      "photo": "/team_photos/Ali_Hosseini.png"
+    },
+    {
+      "name": "Aryan Singh",
+      "role": "CTO",
+      "bio": "Previously: Machine Learning Engineer at Medivizor; BSc in Cognitive Systems (Computational Intelligence & Design) from the University of British Columbia",
+      "linkedin": "https://www.linkedin.com/in/aryan-singh-b49627247/",
+      "photo": "/team_photos/Aryan_Singh.jpeg"
+    },
+    {
+      "name": "Tiger Du",
+      "role": "CFO",
+      "bio": "Previously: Accountant at PepsiCo; BCom in Accounting from the University of British Columbia",
+      "linkedin": "https://www.linkedin.com/in/tiger-du-57343a280/",
+      "photo": "/team_photos/Tiger_Du.jpeg"
+    },
+    {
+      "name": "Massood Moradkhan",
+      "role": "Advisor & Compliance",
+      "bio": "Startup Consultant holding an MBA, an LLM in International Business Law, and a BSc in Computer Science & Mathematics",
+      "linkedin": "https://www.linkedin.com/in/massood-moradkhan/",
+      "photo": "/team_photos/Massood_Moradkhan.jpeg"
+    }
+  ],
+
+  "founded": "2026",
+  "registryLabel": "Nootles Technologies Inc.",
+  "registryUrl": ""
+}
