@@ -22,5 +22,7 @@ export const legal = {
   governingLaw:
     "the Province of British Columbia and the federal laws of Canada that apply in it",
   venue: "Vancouver, British Columbia",
-  effective: "17 August 2026",
+  /* Each document carries the date of its own last revision, so a change to
+     one does not make the other look revised. */
+  effective: { terms: "17 August 2026", privacy: "28 September 2026" },
 } as const;
