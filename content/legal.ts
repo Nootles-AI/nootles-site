@@ -30,7 +30,7 @@ export const terms: LegalDoc = {
   title: "Terms of service",
   description: `The agreement that governs use of ${site.name} — the app and this site.`,
   lede: "The agreement between you and Nootles. The short of it: your documents are yours, the AI's suggestions are yours to check before you rely on them, and the service is provided as is.",
-  effective: legal.effective,
+  effective: legal.effective.terms,
   sections: [
     {
       title: "Agreement to these terms",
@@ -235,7 +235,7 @@ export const privacy: LegalDoc = {
   title: "Privacy policy",
   description: `What ${site.name} collects, why, and what happens to it.`,
   lede: "What Nootles collects, why, and what happens to it. The short of it: this website collects nothing. The app is in beta, and beta means candour — sessions are recorded, AI interactions are kept and used to train the models, and this policy says exactly what goes where. Nothing is sold, and nothing is shown to advertisers.",
-  effective: legal.effective,
+  effective: legal.effective.privacy,
   sections: [
     {
       title: "Who we are and what this covers",
@@ -250,6 +250,9 @@ export const privacy: LegalDoc = {
       blocks: [
         {
           p: "The Site — the pages you are reading now — is static. It sets no cookies, runs no analytics, shows no advertising, and serves its fonts from our own servers, so reading it tells no third party you were here. When your browser requests a page, our hosting provider keeps standard server logs (your IP address, browser type and the page requested) to deliver the pages and defend against abuse; these are kept briefly and we add nothing to them.",
+        },
+        {
+          p: "A referral link — an address of the form app.nootles.com/r/…, shared by a partner — belongs to the App, not the Site. Following one passes you through the App first, which records the visit and sets the cookie described under “Cookies”, and then sends you on, usually to this site. The Site itself still sets nothing.",
         },
       ],
     },
@@ -286,8 +289,12 @@ export const privacy: LegalDoc = {
               text: "If you connect a GitHub repository, we store your access token, encrypted, and summaries of the repository's content, which the AI may read.",
             },
             {
+              lead: "Referral links.",
+              text: "If you arrive through a partner's referral link, the App records the visit — a random visitor identifier, the time, and which link — and keeps the same three things in a cookie for 30 days. If you then create a new Nootles account within those 30 days, the account is linked to that referral, once and for good; an account that already exists is never linked. If you buy with a promotion code that belongs to a partner, your account may be linked to that partner in the same way. Once linked, the partner's name is set as a tag on you in our product analytics, and is added to your Stripe subscription if you buy one.",
+            },
+            {
               lead: "Payment details.",
-              text: "If we ever charge and you buy a paid plan, payment will be handled by a third-party payment processor; we will never store full card numbers.",
+              text: "Paid plans are billed through Stripe, and you pay on Stripe's own checkout page, so your card details go to Stripe and never reach us. We give Stripe your name and email address, and keep what it tells us back: your Stripe customer identifier, your plan, and the state of your subscription.",
             },
           ],
         },
@@ -297,7 +304,7 @@ export const privacy: LegalDoc = {
       title: "How we use it",
       blocks: [
         {
-          p: "We use this information to provide and operate the Service; to store and sync your documents; to power the AI; to train and fine-tune the models that power the Service, for as long as the beta lasts; to watch how the App is used so we can fix and improve it; to secure it and prevent abuse; to answer you; and to comply with law. We do not use your information for advertising, and we do not sell it — and never have.",
+          p: "We use this information to provide and operate the Service; to store and sync your documents; to power the AI; to train and fine-tune the models that power the Service, for as long as the beta lasts; to watch how the App is used so we can fix and improve it; to measure which partners' referral links bring people to Nootles, and how many of them go on to sign up, finish onboarding, reach checkout and pay; to secure it and prevent abuse; to answer you; and to comply with law. We do not use your information for advertising, and we do not sell it — and never have.",
         },
       ],
     },
@@ -328,7 +335,7 @@ export const privacy: LegalDoc = {
           list: [
             {
               lead: "With service providers",
-              text: "— Vercel (hosting), Convex (database and file storage), Clerk (sign-in), PostHog (analytics and session replay), Sentry (error reporting), the AI model providers named above, and the content-delivery networks that serve parts of the App — who may use the information only to provide their service to us;",
+              text: "— Vercel (hosting), Convex (database and file storage), Clerk (sign-in), Stripe (payments), PostHog (analytics and session replay), Sentry (error reporting), the AI model providers named above, and the content-delivery networks that serve parts of the App — who may use the information only to provide their service to us;",
             },
             {
               lead: "To comply with law,",
@@ -349,7 +356,7 @@ export const privacy: LegalDoc = {
           ],
         },
         {
-          p: "We do not sell personal information and do not share it for cross-context behavioural advertising.",
+          p: "We do not sell personal information and do not share it for cross-context behavioural advertising. A partner whose referral link or promotion code brought you to Nootles receives no personal information about you from us.",
         },
       ],
     },
@@ -359,13 +366,16 @@ export const privacy: LegalDoc = {
         {
           p: "The App uses cookies and local storage to keep you signed in, to remember your preferences, and — during the beta — for the analytics and session recording described above. They are set for us and for the providers named in this policy, not for advertisers; there are no advertising cookies. Because sign-in is made of cookies, blocking them means the App cannot work.",
         },
+        {
+          p: "One more is set only if you follow a partner's referral link: a first-party cookie on app.nootles.com, named nt_ref, holding the link's name, a random visitor identifier and the time of the click. It lasts 30 days, is cleared once the App has read it, and exists only to credit the referral — it is not an advertising cookie, and it is not shared with the partner or anyone else.",
+        },
       ],
     },
     {
       title: "Retention",
       blocks: [
         {
-          p: `Account information is kept while your account exists. Documents and their edit history are kept so you can come back to them — and during the beta, deleting a page or project removes it from your workspace but does not immediately erase every copy from our systems: edit history, uploaded files and AI interaction records can persist until we erase them. To have your account and everything under it erased, write to ${legal.privacyContact} and we will do it. Records the law requires us to keep, we keep for as long as it requires.`,
+          p: `Account information is kept while your account exists, as is the referral it was linked to, if any; both are deleted with the account. Documents and their edit history are kept so you can come back to them — and during the beta, deleting a page or project removes it from your workspace but does not immediately erase every copy from our systems: edit history, uploaded files and AI interaction records can persist until we erase them. To have your account and everything under it erased, write to ${legal.privacyContact} and we will do it. Records the law requires us to keep, we keep for as long as it requires.`,
         },
       ],
     },
