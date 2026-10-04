@@ -1,0 +1,174 @@
+/* /team, in the home page's world. The root, bar, hero canvas and footer come
+   from app/ideas/2/idea2.css; this adds the header, the ruled band of people,
+   and the record tile on the grey. */
+
+/* The header sits on the hero's dot grid and ends in the ground line. */
+.tm-head {
+  width: min(760px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(72px, 12vh, 132px) 0 clamp(64px, 10vh, 112px);
+  text-align: center;
+}
+.tm-head > * { zoom: var(--airy); }
+.tm-kicker {
+  margin: 0 0 18px;
+  font: 500 12px/1 var(--i2-mono), ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #80868d;
+}
+.tm-title {
+  margin: 0;
+  font-size: clamp(40px, 5vw, 4.25rem);
+  line-height: 1.04;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--ic-ink);
+}
+.tm-lede {
+  max-width: 46ch;
+  margin: 22px auto 0;
+  font-size: clamp(17px, 1.5vw, 20px);
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+
+/* The people: one band, ruled across the page, cells split by the same rule,
+   square-cornered — the steps band's form. */
+.tm-band {
+  --rule: 1.5px solid #d6dade;
+  border-block: var(--rule);
+  background: #ffffff;
+}
+.tm-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(1200px, calc(100% - 48px));
+  margin: 0 auto;
+  border-inline: var(--rule);
+}
+.tm-cell {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 28px 30px;
+}
+.tm-cell > * { zoom: var(--airy); }
+.tm-cell + .tm-cell { border-left: var(--rule); }
+/* The ring is on the frame, not the photo: the photo's grayscale filter
+   would take the colour out of it too. */
+.tm-photo {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  margin-bottom: 26px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px var(--c);
+}
+.tm-photo-img,
+.tm-photo-empty {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  /* No colour in the photos: the person's colour is their ring and tag. */
+  filter: grayscale(1);
+}
+.tm-photo-empty { background: #f1f2f4; }
+.tm-tag {
+  position: absolute;
+  left: 64px;
+  bottom: -6px;
+  padding: 2px 7px;
+  border-radius: 4px 9px 9px 9px;
+  background: var(--c);
+  color: var(--ct);
+  font: 600 12px/1.25 var(--i2-face), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 4px 10px -4px rgb(0 0 0 / 0.18);
+}
+.tm-name {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ic-ink);
+}
+.tm-role {
+  margin: 6px 0 0;
+  font: 500 12px/1.3 var(--i2-mono), ui-monospace, monospace;
+  letter-spacing: 0.02em;
+  color: #80868d;
+}
+.tm-bio {
+  margin: 14px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.tm-link {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ic-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #c3c9cf;
+  transition: text-decoration-color 140ms;
+}
+.tm-link:hover { text-decoration-color: var(--ic-ink); }
+.tm-link:focus-visible { outline: 2px solid #16181a; outline-offset: 3px; border-radius: 4px; }
+
+/* The record, on the grey, as one tile in the showcase's chrome. Bottom room
+   is for the cast, who stand on the footer's top rule. */
+.tm-record {
+  width: min(1200px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(72px, 10vh, 120px) 0 clamp(190px, 24vh, 250px);
+}
+.tm-record-tile {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 26px 28px 28px;
+  border: 1.5px solid #d6dade;
+  background: #ffffff;
+}
+.tm-record-tile > * { zoom: var(--airy); }
+.tm-record-tile h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+.tm-record-tile p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.tm-record-tile .tm-record-name {
+  margin-top: 12px;
+  font: 500 12.5px/1.4 var(--i2-mono), ui-monospace, monospace;
+  color: var(--ic-ink);
+}
+.tm-record-tile .tm-link { padding-top: 14px; }
+
+@media (max-width: 1080px) {
+  .tm-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tm-cell + .tm-cell { border-left: 0; }
+  .tm-cell:nth-child(even) { border-left: var(--rule); }
+  .tm-cell:nth-child(n + 3) { border-top: var(--rule); }
+}
+@media (max-width: 620px) {
+  .tm-row { grid-template-columns: minmax(0, 1fr); width: calc(100% - 24px); }
+  .tm-cell:nth-child(even) { border-left: 0; }
+  .tm-cell + .tm-cell { border-top: var(--rule); }
+}

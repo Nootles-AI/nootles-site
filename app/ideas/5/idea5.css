@@ -1,0 +1,223 @@
+/* Idea 5 — six copies, one canvas. */
+.i5 {
+  --ic-ui: var(--i5-face);
+  font-family: var(--i5-face), ui-sans-serif, system-ui, sans-serif;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.i5 .ic-nav,
+.i5-say {
+  width: min(1200px, calc(100% - 40px));
+  margin-inline: auto;
+}
+.i5 .ic-nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 72px;
+  font-size: 15px;
+}
+.i5 .ic-nav-mark { display: inline-flex; color: var(--ic-ink); }
+.i5 .ic-nav-links { display: flex; gap: 26px; }
+.i5 .ic-nav-links a { color: #4a4f55; text-decoration: none; }
+.i5 .ic-nav-links a:hover { color: var(--ic-ink); }
+.i5 .ic-nav-cta {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 6px;
+  background: #f1f2f4;
+  color: var(--ic-ink);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 140ms;
+}
+.i5 .ic-nav-cta:hover { background: #e6e8eb; }
+
+.i5-hero {
+  display: flex;
+  flex-direction: column;
+}
+.i5-say {
+  padding-top: clamp(40px, 8vh, 96px);
+}
+.i5-title {
+  margin: 0;
+  font-size: clamp(38px, 6.4vw, 5.6rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.i5-title span { display: block; }
+.i5-title span:first-child { color: #8b9097; }
+
+.i5-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 32px;
+  margin-top: 32px;
+}
+.i5-sub {
+  margin: 0;
+  font-size: clamp(18px, 1.6vw, 21px);
+  color: #3e4349;
+}
+.i5-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: var(--ic-ink);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 140ms;
+}
+.i5-cta:hover { background: #33373b; }
+.i5-cta svg { transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1); }
+.i5-cta:hover svg { transform: translateX(3px); }
+
+/* ---- The stage --------------------------------------------------------------
+   The overlay is the image's own box, a size container, so a copy's flight
+   to the centre is computed in cqw and lands at every width. */
+.i5-stage {
+  position: relative;
+  width: min(1120px, calc(100% - 32px));
+  margin: auto auto 0;
+  padding-top: clamp(150px, 22vh, 200px);
+}
+.i5-stage .ic-characters {
+  max-height: 30vh;
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+}
+.i5-over {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  translate: -50% 0;
+  height: min(30vh, calc(min(1120px, 100vw - 32px) * 975 / 4161));
+  aspect-ratio: 4161 / 975;
+  container-type: inline-size;
+}
+
+.i5-copy {
+  --dx: calc((50 - var(--x)) * 1cqw);
+  --dy: calc((-46 - var(--y)) * 0.2343cqw);
+  position: absolute;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  translate: -50% calc(-100% - 10px);
+  padding: 5px 9px;
+  border: 1px solid #dfe2e6;
+  border-radius: 6px;
+  background: #fff;
+  font-family: var(--i5-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: #2a2e33;
+  white-space: nowrap;
+  box-shadow: 0 6px 14px -10px rgb(16 24 32 / 0.35);
+  text-decoration: line-through 1.5px transparent;
+  animation:
+    i5-pop 520ms cubic-bezier(0.16, 1, 0.3, 1) calc(400ms + var(--k) * 220ms) both,
+    i5-strike 300ms ease calc(2500ms + var(--k) * 60ms) both,
+    i5-fly 900ms cubic-bezier(0.7, 0, 0.2, 1) calc(3100ms + var(--k) * 40ms) both;
+}
+@keyframes i5-pop {
+  from { opacity: 0; transform: translateY(8px) scale(0.92); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes i5-strike {
+  to { text-decoration-color: #2a2e33; color: #8b9097; }
+}
+@keyframes i5-fly {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.6); }
+}
+
+.i5-card {
+  position: absolute;
+  left: 50%;
+  top: -46%;
+  translate: -50% -50%;
+  width: 300px;
+  padding: 14px 16px 16px;
+  background: #fff;
+  border: 1px solid #dfe2e6;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgb(16 24 32 / 0.04), 0 22px 40px -24px rgb(16 24 32 / 0.35);
+  animation: i5-card 700ms cubic-bezier(0.16, 1, 0.3, 1) 3700ms both;
+}
+@keyframes i5-card {
+  from { opacity: 0; transform: scale(0.82); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+.i5-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.i5-card-top b { font-weight: 600; }
+.i5-pile {
+  display: flex;
+  margin: 0 0 0 auto;
+  padding: 0;
+  list-style: none;
+}
+.i5-pile li {
+  width: 18px;
+  height: 18px;
+  margin-left: -5px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+.i5-pile-ai { background: #16181a; }
+.i5-card-body {
+  display: grid;
+  gap: 7px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eef0f2;
+}
+.i5-ln {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #3e4349;
+}
+.i5-ln::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--c);
+}
+
+.i5-c-ali { left: -22px; top: 62%; }
+.i5-c-aryan { right: -60px; top: 18px; }
+.i5-c-tiger { left: 38%; bottom: -34px; }
+.i5-c-ai { right: -86px; bottom: -4px; }
+
+@media (max-width: 760px) {
+  .i5 .ic-nav-links { display: none; }
+  .i5-title { font-size: clamp(32px, 9.4vw, 44px); }
+  .i5-copy { font-size: 10px; padding: 3px 6px; }
+  .i5-copy:nth-child(even) { display: none; }
+  .i5-card { width: 240px; }
+  .i5-c-ai, .i5-c-aryan { display: none; }
+}
+@media (max-width: 760px) {
+  .i5-copy:nth-child(even) { display: inline; }
+  .i5-copy:first-child,
+  .i5-copy:nth-child(6) { display: none; }
+  .i5-stage { margin-top: 0; padding-top: 170px; }
+}

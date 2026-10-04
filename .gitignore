@@ -6,3 +6,6 @@ out
 next-env.d.ts
 .env*.local
 .vercel
+
+# Heron is a symlink to the installed skill, not committed (as in the app).
+scripts/build-art/heron

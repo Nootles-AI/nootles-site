@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { TeamPage } from "@/components/Team";
+import { TeamPage } from "@/components/ideas/TeamPage";
+import { fontVars } from "@/components/ideas/fonts";
+import "../ideas/ideas.css";
+import "../ideas/2/idea2.css";
+import "./team.css";
 
 export const metadata: Metadata = {
   title: "Team",
@@ -7,5 +11,9 @@ export const metadata: Metadata = {
 };
 
 export default function Team() {
-  return <TeamPage />;
+  return (
+    <div className={fontVars}>
+      <TeamPage />
+    </div>
+  );
 }

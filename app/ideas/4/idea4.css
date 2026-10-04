@@ -1,0 +1,284 @@
+/* Idea 4 — the page everyone is on. */
+.i4 {
+  --ic-ui: var(--i4-ui);
+  --line: #e4e7ea;
+  font-family: var(--i4-ui), ui-sans-serif, system-ui, sans-serif;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: #fbfbfc;
+}
+
+.i4 .ic-nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  width: min(1160px, calc(100% - 40px));
+  height: 72px;
+  margin-inline: auto;
+  font-size: 15px;
+}
+.i4 .ic-nav-mark { display: inline-flex; color: var(--ic-ink); }
+.i4 .ic-nav-links { display: flex; gap: 26px; }
+.i4 .ic-nav-links a { color: #4a4f55; text-decoration: none; }
+.i4 .ic-nav-links a:hover { color: var(--ic-ink); }
+.i4 .ic-nav-cta {
+  margin-left: auto;
+  color: var(--ic-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+.i4 .ic-nav-cta:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+.i4-desk {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 880px) 280px;
+  justify-content: center;
+  column-gap: 28px;
+  padding-top: clamp(20px, 4vh, 48px);
+}
+
+/* The sheet runs off the bottom of the viewport: the page continues, and the
+   cast stands in front of it. */
+.i4-sheet {
+  position: relative;
+  min-height: calc(100svh - 72px - clamp(20px, 4vh, 48px));
+  padding: clamp(40px, 7vh, 72px) clamp(28px, 5vw, 72px) 0;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 1px 2px rgb(16 24 32 / 0.04), 0 24px 48px -32px rgb(16 24 32 / 0.18);
+}
+
+.i4-title {
+  margin: 0;
+  font-family: var(--i4-doc), ui-serif, Georgia, serif;
+  font-size: clamp(38px, 4.4vw, 3.75rem);
+  font-weight: 620;
+  line-height: 1.06;
+  letter-spacing: -0.028em;
+  font-optical-sizing: auto;
+}
+.i4-hl {
+  position: relative;
+  color: inherit;
+  background: linear-gradient(color-mix(in srgb, var(--c) 55%, transparent), color-mix(in srgb, var(--c) 55%, transparent)) no-repeat 0 88% / 0% 0.42em;
+  border-radius: 2px;
+  animation: i4-mark 900ms cubic-bezier(0.16, 1, 0.3, 1) var(--d) both;
+}
+@keyframes i4-mark {
+  to { background-size: 100% 0.42em; }
+}
+
+.i4-sub {
+  margin: 28px 0 0;
+  font-family: var(--i4-doc), ui-serif, Georgia, serif;
+  font-size: clamp(19px, 1.8vw, 23px);
+  line-height: 1.4;
+  color: #3e4349;
+}
+/* The suggestion: struck word and inserted word, until a person accepts it.
+   Read as struck-through and underlined, never by colour alone. */
+.i4-del {
+  display: inline-block;
+  max-width: 6ch;
+  overflow: hidden;
+  vertical-align: bottom;
+  color: #8a9097;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  margin-right: 0.28em;
+  animation: i4-collapse 500ms cubic-bezier(0.16, 1, 0.3, 1) 4200ms both;
+}
+.i4-ins {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+  text-decoration-color: #16181a;
+  background: #eef0f2;
+  border-radius: 2px;
+  padding: 0 2px;
+  animation: i4-settle 500ms ease 4200ms both;
+}
+@keyframes i4-collapse {
+  to { max-width: 0; margin-right: 0; opacity: 0; }
+}
+@keyframes i4-settle {
+  to { text-decoration-color: transparent; background: transparent; padding: 0; }
+}
+
+.i4-act { margin-top: 36px; }
+.i4-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 8px;
+  background: var(--ic-ink);
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  transition: background 140ms;
+}
+.i4-cta:hover { background: #33373b; }
+
+/* ---- Margin ------------------------------------------------------------- */
+.i4-rail {
+  position: relative;
+  padding-top: clamp(40px, 7vh, 72px);
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+.i4-note {
+  position: relative;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 1px 2px rgb(16 24 32 / 0.04), 0 10px 24px -18px rgb(16 24 32 / 0.25);
+  animation: i4-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.i4-note p { margin: 6px 0 0; color: #2a2e33; }
+.i4-note-q { animation-delay: 1100ms; }
+.i4-note-ai { animation-delay: 2400ms; }
+@keyframes i4-in {
+  from { opacity: 0; transform: translateX(10px); }
+  to { opacity: 1; transform: none; }
+}
+.i4-who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13.5px;
+}
+.i4-dot {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+}
+.i4-dot-ai { background: #16181a; color: #fff; }
+.i4-tag {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 500;
+  color: #5b6066;
+}
+.i4-reply {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #eef0f2;
+  animation: i4-in 500ms cubic-bezier(0.16, 1, 0.3, 1) 2000ms both;
+}
+.i4-note s { color: #6b7178; text-decoration-thickness: 1.5px; }
+.i4-note u { text-underline-offset: 3px; text-decoration-thickness: 1.5px; }
+
+.i4-btns {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+  animation: i4-gone 300ms ease 4200ms both;
+}
+.i4-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 600;
+  color: #3e4349;
+}
+.i4-accept {
+  background: #16181a;
+  border-color: #16181a;
+  color: #fff;
+  animation: i4-press 240ms ease 3900ms both;
+}
+@keyframes i4-press {
+  50% { transform: scale(0.94); }
+  100% { transform: none; }
+}
+@keyframes i4-gone {
+  to { opacity: 0; height: 0; margin-top: 0; overflow: hidden; }
+}
+.i4-done {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  color: #2f6b47;
+  font-size: 13px;
+  font-weight: 600;
+  animation: i4-done 400ms cubic-bezier(0.16, 1, 0.3, 1) 4300ms both;
+}
+@keyframes i4-done {
+  to { height: 22px; margin-top: 10px; opacity: 1; }
+}
+
+/* Ali comes to the Accept button, clicks, and moves off. */
+.i4-c-ali {
+  left: 60%;
+  top: 60%;
+  animation: i4-ali 3200ms cubic-bezier(0.16, 1, 0.3, 1) 2700ms both;
+}
+@keyframes i4-ali {
+  0% { opacity: 0; transform: translate(-140px, 90px); }
+  10% { opacity: 1; }
+  38% { transform: translate(0, 0); }
+  62% { transform: translate(0, 0); }
+  100% { opacity: 1; transform: translate(-60px, 70px); }
+}
+.i4-c-aryan {
+  right: -30px;
+  bottom: -26px;
+}
+
+.i4-floor {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  translate: -50% 0;
+  width: min(1160px, 96%);
+  pointer-events: none;
+}
+.i4-floor .ic-characters {
+  max-height: 30vh;
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+@media (max-width: 1120px) {
+  .i4-desk { grid-template-columns: minmax(0, 760px); padding-inline: 20px; }
+  .i4-rail { display: none; }
+  .i4-del { animation-delay: 2600ms; }
+  .i4-ins { animation-delay: 2600ms; }
+}
+@media (max-width: 760px) {
+  .i4 .ic-nav-links { display: none; }
+  .i4-desk { padding-inline: 12px; }
+  .i4-sheet { padding-inline: 22px; }
+  .i4-title { font-size: clamp(30px, 8.6vw, 40px); }
+}
+@media (max-width: 760px) {
+  .i4-sheet {
+    min-height: auto;
+    padding-bottom: calc((100vw - 24px) * 0.96 * 975 / 4161 + 40px);
+  }
+}
