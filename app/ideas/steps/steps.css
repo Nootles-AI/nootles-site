@@ -1,0 +1,1036 @@
+/* Section 2, step 1 — five ideas for the "Import your context" box. The box
+   language follows the hero's board: things sit on the canvas, not in cards;
+   the step box is one quiet grey field; logos keep their own colours. */
+.st {
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --drag: cubic-bezier(0.45, 0, 0.25, 1);
+  --ink-2: #4a4f55;
+  --line: #e6e9ec;
+  --ic-ui: var(--st-face);
+  font-family: var(--st-face), ui-sans-serif, system-ui, sans-serif;
+  color: var(--ic-ink);
+  background: #fff;
+}
+.st-page {
+  /* 1200px of content: three 384px boxes, each with a 328px visual inside. */
+  max-width: 1248px;
+  margin: 0 auto;
+  padding: 64px 24px 140px;
+}
+.st-h {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.st-sub {
+  margin: 8px 0 0;
+  color: var(--ink-2);
+}
+.st-idea { margin-top: 72px; }
+.st-idea-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.st-idea-name span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #eef0f2;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.st-idea-note {
+  max-width: 70ch;
+  margin: 6px 0 20px;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+.st-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+/* ---- The step box ------------------------------------------------------------ */
+.st-box {
+  display: flex;
+  flex-direction: column;
+  min-height: 440px;
+  padding: 28px;
+  border-radius: 20px;
+  background: #f5f6f8;
+  overflow: hidden;
+}
+.st-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.st-n {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--ic-ink);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+.st-line {
+  max-width: 34ch;
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.st-visual {
+  position: relative;
+  margin-top: auto;
+  padding-top: 24px;
+}
+.st-box.is-muted .st-title { color: #9aa0a6; }
+.st-box.is-muted .st-n { background: #d5d9de; }
+.st-box.is-muted .st-line { color: #9aa0a6; }
+.st-box.is-muted .st-visual {
+  height: 240px;
+}
+.st-box.is-muted .st-visual::before {
+  content: "";
+  position: absolute;
+  inset: 24px 0 0;
+  border: 1.5px dashed #d5d9de;
+  border-radius: 14px;
+}
+
+/* Shared parts of the visuals. */
+.st-v {
+  position: relative;
+  width: 328px;
+  height: 240px;
+  margin: 0 auto;
+}
+.st-logo { display: block; flex: none; }
+.st-canvas,
+.st-pull-canvas {
+  border-radius: 12px;
+  background-color: #fff;
+  background-image: radial-gradient(circle at 1px 1px, #dde1e6 1px, transparent 1.3px);
+  background-size: 14px 14px;
+}
+.st-tile {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: #fff;
+}
+
+/* ---- 1. Pull-in ---------------------------------------------------------------- */
+.st-pull-canvas {
+  position: absolute;
+  width: 160px;
+  height: 116px;
+}
+.st-pull-name {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #7b8188;
+}
+.st-pull .st-tile {
+  animation: st-emit 7s ease calc(var(--i) * 0.45s) infinite both;
+}
+@keyframes st-emit {
+  0% { transform: none; }
+  3% { transform: scale(1.12); }
+  8%, 100% { transform: none; }
+}
+.st-chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 70px;
+  height: 24px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 8.5px;
+  font-weight: 650;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  box-shadow: 0 3px 8px -5px rgb(16 24 32 / 0.35);
+  animation: st-fly 7s var(--ease) calc(var(--i) * 0.45s) infinite both;
+}
+@keyframes st-fly {
+  0% { opacity: 0; transform: translate(var(--fx), var(--fy)) scale(0.4); }
+  4% { opacity: 1; transform: translate(var(--fx), var(--fy)) scale(0.6); }
+  16% { opacity: 1; transform: none; }
+  80% { opacity: 1; transform: none; }
+  88%, 100% { opacity: 0; transform: none; }
+}
+
+/* ---- 2. Drag from the dock ------------------------------------------------------- */
+.st-dock-row {
+  position: absolute;
+  top: 0;
+  left: 26px;
+  display: flex;
+  gap: 12px;
+}
+.st-dock-row .st-tile {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+.st-dock-canvas {
+  position: absolute;
+  left: 0;
+  top: 56px;
+  width: 328px;
+  height: 184px;
+}
+.st-dk-card,
+.st-dk-frame {
+  position: absolute;
+  animation-duration: 6.6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: var(--drag);
+  animation-fill-mode: both;
+}
+.st-dk-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 150px;
+  height: 40px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 3px 10px -6px rgb(16 24 32 / 0.3);
+}
+.st-dk-card b {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+}
+.st-dk-card em {
+  display: block;
+  font-size: 9.5px;
+  font-style: normal;
+  color: #7b8188;
+}
+.st-dk-a { left: 16px; top: 76px; animation-name: st-carry-a; }
+.st-dk-b { left: 190px; top: 74px; animation-name: st-carry-b; }
+.st-dk-c { left: 40px; top: 168px; animation-name: st-carry-c; }
+@keyframes st-carry-a {
+  0%, 8.9% { opacity: 0; transform: translate(1px, -78px) scale(0.5); }
+  9% { opacity: 1; transform: translate(1px, -78px) scale(0.5); }
+  22% { opacity: 1; transform: none; }
+  92% { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+@keyframes st-carry-b {
+  0%, 34.9% { opacity: 0; transform: translate(-95px, -89px) scale(0.5); }
+  35% { opacity: 1; transform: translate(-95px, -89px) scale(0.5); }
+  48% { opacity: 1; transform: none; }
+  92% { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+@keyframes st-carry-c {
+  0%, 60.9% { opacity: 0; transform: translate(-71px, -170px) scale(0.5); }
+  61% { opacity: 1; transform: translate(-71px, -170px) scale(0.5); }
+  74% { opacity: 1; transform: none; }
+  92% { opacity: 1; transform: none; }
+  98%, 100% { opacity: 0; transform: none; }
+}
+.st-dk-frame {
+  width: 90px;
+  height: 66px;
+}
+.st-dk-frame-name {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 8.5px;
+  font-weight: 500;
+  color: #6b7178;
+}
+.st-dk-frame-art,
+.st-embed-phone {
+  display: block;
+  margin-top: 3px;
+  width: 44px;
+  height: 52px;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.st-dk-frame-art i,
+.st-embed-phone i {
+  display: block;
+  height: 4px;
+  margin-top: 3px;
+  border-radius: 2px;
+  background: #e8ebee;
+}
+.st-dk-frame-art i:first-child,
+.st-embed-phone i:first-child {
+  height: 16px;
+  margin-top: 0;
+  background: #e4f0ff;
+}
+.st-dk-frame-art i:last-child,
+.st-embed-phone i:last-child {
+  height: 7px;
+  margin-top: 8px;
+  background: #16181a;
+}
+.st-dk-hand {
+  left: 0;
+  top: 0;
+  animation: st-dock-hand 6.6s var(--drag) infinite both;
+}
+@keyframes st-dock-hand {
+  0% { opacity: 0; transform: translate(300px, 140px); }
+  6% { opacity: 1; transform: translate(92px, 18px); }
+  9% { transform: translate(92px, 18px); }
+  22% { transform: translate(91px, 96px); }
+  26% { transform: translate(91px, 96px); }
+  32% { transform: translate(140px, 18px); }
+  35% { transform: translate(140px, 18px); }
+  48% { transform: translate(235px, 107px); }
+  52% { transform: translate(235px, 107px); }
+  58% { transform: translate(44px, 18px); }
+  61% { transform: translate(44px, 18px); }
+  74% { transform: translate(115px, 188px); }
+  78% { transform: translate(115px, 188px); }
+  90% { opacity: 1; transform: translate(300px, 214px); }
+  100% { opacity: 0; transform: translate(300px, 214px); }
+}
+
+/* ---- 3. Paste & unfurl ------------------------------------------------------------- */
+.st-paste-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 328px;
+  height: 192px;
+}
+.st-slide {
+  position: absolute;
+  inset: 18px 18px auto;
+  opacity: 0;
+  animation: st-slide 12s ease calc(var(--i) * 2s) infinite both;
+}
+@keyframes st-slide {
+  0% { opacity: 0; transform: translateY(4px); }
+  2% { opacity: 1; transform: none; }
+  15% { opacity: 1; transform: none; }
+  16.5%, 100% { opacity: 0; transform: none; }
+}
+.st-url {
+  display: inline-flex;
+  max-width: 100%;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #e7efff;
+  color: #24324d;
+  font-family: var(--st-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.st-unfurl {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 6px 16px -12px rgb(16 24 32 / 0.35);
+  transform-origin: top left;
+  animation: st-unfurl 12s var(--ease) calc(var(--i) * 2s) infinite both;
+}
+@keyframes st-unfurl {
+  0%, 3% { opacity: 0; transform: translateY(-6px) scale(0.94); }
+  6% { opacity: 1; transform: none; }
+  100% { opacity: 1; transform: none; }
+}
+.st-unfurl-logo {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #f5f6f8;
+}
+.st-unfurl-body em {
+  display: block;
+  font-size: 10px;
+  font-style: normal;
+  color: #7b8188;
+}
+.st-unfurl-body b {
+  display: block;
+  margin-top: 1px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.st-unfurl-body span {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: #5b6066;
+}
+.st-paste-dock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.st-paste-dot {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #fff;
+  opacity: 0.35;
+  animation: st-dot 12s ease calc(var(--i) * 2s) infinite both;
+}
+@keyframes st-dot {
+  0% { opacity: 0.35; transform: none; }
+  1.5% { opacity: 1; transform: translateY(-2px); }
+  15.5% { opacity: 1; transform: translateY(-2px); }
+  17%, 100% { opacity: 0.35; transform: none; }
+}
+
+/* ---- 4. Slash import ------------------------------------------------------------------ */
+.st-slash-canvas {
+  position: absolute;
+  inset: 0;
+}
+.st-slash-line {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  display: flex;
+  align-items: center;
+  height: 18px;
+  font-family: var(--st-mono), ui-monospace, monospace;
+  font-size: 12.5px;
+}
+.st-slash-typed {
+  display: inline-block;
+  animation: st-slash-type 6s steps(7, end) infinite both;
+}
+@keyframes st-slash-type {
+  0% { clip-path: inset(-4px 100% -4px 0); }
+  10% { clip-path: inset(-4px -2px -4px 0); }
+  48% { clip-path: inset(-4px -2px -4px 0); }
+  50%, 100% { clip-path: inset(-4px 100% -4px 0); }
+}
+.st-slash-caret {
+  width: 1.5px;
+  height: 15px;
+  margin-left: 1px;
+  background: var(--ic-ink);
+  animation: st-blink 1s steps(1) infinite;
+}
+@keyframes st-blink { 50% { opacity: 0; } }
+.st-menu {
+  position: absolute;
+  left: 18px;
+  top: 44px;
+  width: 176px;
+  padding: 6px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 28px -16px rgb(16 24 32 / 0.4);
+  transform-origin: top left;
+  animation: st-menu 6s var(--ease) infinite both;
+}
+@keyframes st-menu {
+  0%, 11% { opacity: 0; transform: translateY(-4px) scale(0.96); }
+  14% { opacity: 1; transform: none; }
+  47% { opacity: 1; transform: none; }
+  50%, 100% { opacity: 0; transform: scale(0.98); }
+}
+.st-menu-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 26px;
+  padding: 0 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.st-menu-hl {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 6px;
+  height: 26px;
+  border-radius: 7px;
+  background: #eef2f7;
+  animation: st-hl 6s var(--ease) infinite both;
+}
+@keyframes st-hl {
+  0%, 22% { transform: translateY(0); background: #eef2f7; }
+  28%, 32% { transform: translateY(26px); background: #eef2f7; }
+  38%, 43% { transform: translateY(52px); background: #eef2f7; }
+  45%, 100% { transform: translateY(52px); background: #dfe7f5; }
+}
+.st-embed {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  width: 232px;
+  animation: st-embed 6s var(--ease) infinite both;
+}
+@keyframes st-embed {
+  0%, 50% { opacity: 0; transform: translateY(6px) scale(0.97); }
+  54% { opacity: 1; transform: none; }
+  92% { opacity: 1; transform: none; }
+  97%, 100% { opacity: 0; transform: none; }
+}
+.st-embed-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #6b7178;
+}
+.st-embed-art {
+  display: flex;
+  gap: 14px;
+  margin-top: 6px;
+  padding: 16px 18px;
+  border-radius: 10px;
+  background: #f2f4f7;
+}
+.st-embed-phone {
+  width: 62px;
+  height: 120px;
+  padding: 7px;
+  margin: 0;
+}
+.st-embed-phone i:first-child { height: 42px; }
+.st-embed-phone i:last-child { margin-top: 38px; height: 10px; }
+.st-embed-phone.is-b i:first-child { background: #e8f7ef; }
+
+/* ---- 5. Wired in -------------------------------------------------------------------------- */
+.st-wire-svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.st-wire-base {
+  fill: none;
+  stroke: #d3d8dd;
+  stroke-width: 1.5;
+}
+/* Each wire's light is its source's colour, flowing in unhurried, one wire
+   after another, and simply disappearing into the tile. */
+.st-wire-flow {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 10 90;
+  stroke-dashoffset: 100;
+  animation: st-flow 6s linear calc(var(--i) * -0.75s) infinite;
+}
+@keyframes st-flow {
+  to { stroke-dashoffset: 0; }
+}
+.st-wire-node {
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 118px;
+  height: 26px;
+  padding: 0 9px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* The wires end in the Nootles mark, which soaks up what arrives. */
+.st-wire-n {
+  position: absolute;
+  left: 222px;
+  top: 72px;
+  width: 92px;
+  height: 92px;
+}
+
+.st-wire-mark {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 22px;
+  background: #fff;
+  color: var(--ic-ink);
+  animation: st-grow 7s ease-out both;
+}
+.st-wire-mark svg {
+  position: relative;
+  z-index: 1;
+}
+/* It grows a little as it fills — once, slowly. */
+@keyframes st-grow {
+  from { scale: 0.9; }
+  to { scale: 1; }
+}
+/* A glowing mist of the sources' colours gathers in the tile. There is no
+   surface: the fill is a soft front — a mask whose edge fades over half the
+   tile — rising from the bottom, and inside it six blurred clouds, each
+   rising into its place at its own pace and then drifting slowly on its own
+   loop. Light colours overlapping only a little, so it stays clean. */
+.st-ink {
+  position: absolute;
+  inset: 0;
+}
+.st-mist {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(to top, #000 52%, transparent 100%);
+  mask-image: linear-gradient(to top, #000 52%, transparent 100%);
+  -webkit-mask-size: 100% 220%;
+  mask-size: 100% 220%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: st-gather 7.5s cubic-bezier(0.3, 0.2, 0.25, 1) both;
+}
+@keyframes st-gather {
+  from { -webkit-mask-position: 0 0; mask-position: 0 0; }
+  to { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+}
+.st-puff {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 54px;
+  height: 54px;
+  margin: -27px 0 0 -27px;
+  translate: 0 0;
+  border-radius: 50%;
+  background: var(--c);
+  opacity: 0.62;
+  filter: blur(13px);
+  animation:
+    st-puff-rise var(--rise) cubic-bezier(0.25, 0.4, 0.3, 1) both,
+    st-puff-drift var(--drift) ease-in-out var(--rise) infinite alternate;
+}
+@keyframes st-puff-rise {
+  from { translate: 0 60px; scale: 0.6; }
+  to { translate: 0 0; scale: 1; }
+}
+@keyframes st-puff-drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(7px, -5px); }
+  100% { transform: translate(-6px, 4px); }
+}
+
+/* ---- Still frames -------------------------------------------------------------------------
+   Without motion each visual rests on its finished state rather than on the
+   empty first frame of its loop. */
+@media (prefers-reduced-motion: reduce) {
+  .st .st-chip,
+  .st .st-dk-card,
+  .st .st-dk-frame,
+  .st .st-embed,
+  .st .st-unfurl,
+  .st .st-pull .st-tile,
+  .st .st-paste-dot {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .st .st-dk-hand,
+  .st .st-menu,
+  .st .st-slash-line,
+  .st .st-wire-flow { display: none; }
+  .st .st-wire-mark,
+  .st .st-mist,
+  .st .st-puff { animation: none !important; }
+  .st .st-mist { -webkit-mask-position: 0 100%; mask-position: 0 100%; }
+  .st .st-slide { animation: none !important; opacity: 0; }
+  .st .st-slide:first-child { opacity: 1; }
+  .st .st-paste-dot { opacity: 0.35; }
+  .st .st-paste-dot:first-child { opacity: 1; }
+}
+
+@media (max-width: 1080px) {
+  .st-row { grid-template-columns: minmax(0, 384px); }
+  .st-box.is-muted { display: none; }
+}
+
+/* ==== Enrichment options for "Wired in" =========================================
+   Context shown as content: items arrive one at a time on one rhythm (set in
+   Enrich.tsx), and each option shows a different result of having them. */
+.st-idea.is-first { margin-top: 48px; }
+.en .en-svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+.en-wire {
+  fill: none;
+  stroke: #d3d8dd;
+  stroke-width: 1.5;
+}
+/* Once its item has arrived, a wire stays lit in its source's colour. */
+.en-wire-on {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 1.5;
+  opacity: 0;
+  animation: en-on 500ms ease var(--in) both;
+}
+@keyframes en-on { to { opacity: 0.55; } }
+.en-wire-dash {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 12 200;
+  stroke-dashoffset: 12;
+  animation: en-dash 1s cubic-bezier(0.45, 0, 0.25, 1) var(--go) both;
+}
+@keyframes en-dash { to { stroke-dashoffset: -100; } }
+.en-node-mini {
+  position: absolute;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: #fff;
+}
+.en-mark {
+  position: relative;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background: #fff;
+  color: var(--ic-ink);
+}
+@keyframes en-show { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---- A. Tokens, deck and answer ---- */
+.en-tokens { height: 306px; }
+.en-token {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  font-size: 9px;
+  font-weight: 650;
+  white-space: nowrap;
+  box-shadow: 0 3px 8px -5px rgb(16 24 32 / 0.35);
+  offset-rotate: 0deg;
+  offset-anchor: center;
+  offset-distance: 0%;
+  opacity: 0;
+  animation: en-travel 1s cubic-bezier(0.45, 0, 0.25, 1) var(--go) both;
+}
+@keyframes en-travel {
+  0% { offset-distance: 0%; opacity: 0; scale: 0.8; }
+  12% { opacity: 1; scale: 1; }
+  82% { offset-distance: 100%; opacity: 1; scale: 1; }
+  100% { offset-distance: 100%; opacity: 0; scale: 0.5; }
+}
+.en-deck {
+  position: absolute;
+  width: 76px;
+  height: 76px;
+}
+/* Each arrival adds a card to the deck behind the mark, its source's colour
+   along its top edge. */
+.en-card {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+  /* The source's colour along the top edge, following the rounded corners. */
+  box-shadow: inset 0 3px 0 var(--c);
+  opacity: 0;
+  animation: en-card 500ms var(--ease) var(--in) both;
+}
+@keyframes en-card {
+  from { opacity: 0; transform: none; }
+  to {
+    opacity: 1;
+    transform: translate(calc(var(--k) * 2.4px + 3px), calc(var(--k) * -3px - 3px));
+  }
+}
+.en-tokens .en-mark {
+  width: 76px;
+  height: 76px;
+  border-radius: 20px;
+  box-shadow: 0 1px 2px rgb(16 24 32 / 0.06);
+}
+.en-answer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 250px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fff;
+  opacity: 0;
+  animation: en-show 400ms ease var(--at) both;
+}
+.en-ai {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ic-ink);
+  color: #fff;
+}
+.en-answer p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ic-ink);
+}
+/* The answer streams in a word at a time, sources cited inline as marks. */
+.en-word {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 3.5px;
+  vertical-align: -1px;
+  opacity: 0;
+  animation: en-show 280ms ease var(--w) both;
+}
+
+/* ---- B. Rings ---- */
+.en-track {
+  fill: none;
+  stroke: #e5e8ec;
+  stroke-width: 3;
+}
+.en-ring {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: en-ring 900ms cubic-bezier(0.45, 0, 0.25, 1) var(--in) both;
+}
+@keyframes en-ring { to { stroke-dashoffset: 0; } }
+.en-ring-mark {
+  position: absolute;
+  left: 218px;
+  top: 88px;
+  border-radius: 18px;
+}
+
+/* ---- C. Memory graph ----
+   Round logo nodes with a label under each, straight edges: hubs tied to the
+   mark, children tied to their hub, and dashed cross-links last. */
+.en-edge {
+  stroke: #c3c9cf;
+  stroke-width: 1.25;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: en-ring 380ms ease-out var(--in) both;
+}
+.en-edge.is-hub {
+  stroke: #9aa1a8;
+  stroke-width: 1.5;
+}
+.en-link {
+  stroke: var(--ic-ink);
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-dasharray: 3 4;
+  opacity: 0;
+  animation: en-link-in 500ms ease var(--at) both;
+}
+@keyframes en-link-in { to { opacity: 0.55; } }
+.en-graph-mark {
+  position: absolute;
+  left: 126px;
+  top: 92px;
+  border-radius: 16px;
+}
+.en-gnode {
+  position: absolute;
+  z-index: 35;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  translate: -50% -13px;
+  opacity: 0;
+  animation: en-pop 420ms var(--ease) var(--in) both;
+}
+.en-gdot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+}
+.en-gnode.is-hub .en-gdot {
+  width: 28px;
+  height: 28px;
+  border-color: #d3d8dd;
+}
+.en-gnode.is-hub { translate: -50% -15px; }
+@keyframes en-pop {
+  from { opacity: 0; scale: 0.6; }
+  to { opacity: 1; scale: 1; }
+}
+.en-glabel {
+  /* Backed in the box's own grey, so edges pass behind the words. */
+  padding: 1px 3px;
+  border-radius: 3px;
+  background: #f5f6f8;
+  font-size: 8.5px;
+  font-weight: 600;
+  line-height: 1;
+  color: #4a4f55;
+  white-space: nowrap;
+}
+
+.en-under {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  text-align: center;
+}
+.en-replay {
+  display: block;
+  margin: 18px auto 0;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid #dfe2e6;
+  border-radius: 999px;
+  background: #fff;
+  font: 600 14px/1 var(--st-face), ui-sans-serif, system-ui, sans-serif;
+  color: var(--ic-ink);
+  cursor: pointer;
+}
+.en-replay:hover { background: #f5f6f8; }
+
+@media (prefers-reduced-motion: reduce) {
+  .st .en-token,
+  .st .en-wire-dash { display: none; }
+  .st .en-wire-on,
+  .st .en-card,
+  .st .en-answer,
+  .st .en-word,
+  .st .en-ring,
+  .st .en-edge,
+  .st .en-link,
+  .st .en-gnode { animation-delay: 0s !important; }
+}
+
+/* ==== Step 2 — plan, design and build ==========================================
+   The team picture fitted whole into the visual area, with the soft sheet
+   shadow the app gives it, so it reads as a page lying on the box. The SVG
+   carries its own reduced-motion handling. */
+/* Taller than the other visuals: Step 2's line is a row shorter than Step 1's,
+   so the picture takes that room instead of leaving it empty above. */
+.st2-team {
+  display: grid;
+  place-items: center;
+  height: 276px;
+}
+.st2-art {
+  /* A fixed height: a percentage here resolves against an auto grid row and
+     falls back to the SVG's own 4106px. */
+  height: 276px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  user-select: none;
+  filter: drop-shadow(0 14px 24px rgb(40 36 30 / 0.14));
+}
+
+/* ==== Step 3 — build ==============================================================
+   The Heron scene is drawn at twice the visual's size, so it fits exactly. */
+.st3-build { height: 240px; }
+.st3-art {
+  display: block;
+  width: 328px;
+  height: 240px;
+  user-select: none;
+}
+
+/* The looping graph fades out before it builds again. */
+.st-loop { transition: opacity 600ms ease; }
+.st-loop.is-leaving { opacity: 0; }

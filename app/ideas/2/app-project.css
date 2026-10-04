@@ -1,0 +1,1855 @@
+/* Section 3's lead — a project open in the Nootles app (AppProject.tsx).
+   Everything inside the window is the app's, in its own px and its own oklch
+   tokens, scoped here as --ap-*: warm stone greys, ink and paper, and amber
+   only for the model at work. The window is authored at 1440 × 900 and scaled
+   to the stage by AppScale (`--k`); below 760px it shows the sheet alone.
+   Times come from AppProject.tsx as --t-* on the loop (the whole window, so
+   the chat and the pages rail keep the sheet's beats) and --at, --ws, --we,
+   --dk, --on, --off on the pieces; nothing moves until the loop is on screen
+   (.is-on). The hand's tracks are keyframes AppProject.tsx writes. */
+
+/* ---- The tile ------------------------------------------------------------------- */
+.sc-proj {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: var(--rule);
+}
+.sc-proj > * { zoom: var(--airy); }
+.ap-stage { padding: 28px; }
+@media (max-width: 720px) { .ap-stage { padding: 16px; } }
+@media (max-width: 420px) { .ap-stage { padding: 10px; } }
+
+/* ---- The window, scaled --------------------------------------------------------- */
+.ap-fit {
+  --k: 0.88;
+  position: relative;
+  height: calc(900px * var(--k));
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px #e3e6e9;
+}
+.ap-win {
+  /* The app's tokens (app/globals.css), scoped to the window. */
+  --ap-bg: oklch(1 0 55);
+  --ap-surface: oklch(0.975 0.0019 55);
+  --ap-sunken: oklch(0.958 0.0022 55);
+  --ap-elevated: oklch(1 0 55);
+  --ap-border: oklch(0.93 0.0025 55);
+  --ap-border-strong: oklch(0.875 0.0028 55);
+  --ap-fg: oklch(0.25 0.0038 55);
+  --ap-muted: oklch(0.535 0.0054 55);
+  --ap-faint: oklch(0.72 0.0043 55);
+  --ap-ghost: oklch(0.535 0.0054 55);
+  --ap-selected: oklch(0.25 0.0038 55 / 0.065);
+  --ap-accent: oklch(0.542 0.145 75);
+  --ap-accent-soft: oklch(0.716 0.116 75);
+  --ap-edge: oklch(0.68 0.0046 55);
+  --ap-line-active: oklch(0.52 0.0053 55);
+  --ap-diff-add: oklch(0.53 0.095 148);
+  --ap-diff-add-bg: oklch(0.962 0.024 148);
+  --ap-diff-add-line: oklch(0.63 0.105 148);
+  --ap-diff-del: oklch(0.548 0.115 25);
+  --ap-code-bg: oklch(0.255 0.0039 55);
+  --ap-code-top: oklch(0.225 0.0037 55);
+  --ap-code-border: oklch(0.33 0.0044 55);
+  --ap-code-muted: oklch(0.64 0.0049 55);
+  /* The canvas's one accent, for selection UI alone (canvas.css). */
+  --ap-select: #0d99ff;
+  --ap-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --ap-spring: linear(0, 0.012 1.2%, 0.19 5.6%, 0.49 10.6%, 0.76 16.2%, 0.93 22.2%, 1.003 28.6%, 1.011 35.4%, 1.009 42.8%, 1.003 56%, 1);
+  --ap-dur-fast: 95ms;
+  --ap-dur: 145ms;
+  --ap-dur-slow: 270ms;
+  --ap-mono: var(--app-mono), ui-monospace, monospace;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 900px;
+  transform: scale(var(--k));
+  transform-origin: 0 0;
+  background: var(--ap-surface);
+  color: var(--ap-fg);
+  font: 400 16px/1.5 var(--app-sans), ui-sans-serif, system-ui, sans-serif;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.ap-win p,
+.ap-win h1,
+.ap-win h2,
+.ap-win ul,
+.ap-win ol { margin: 0; padding: 0; }
+.ap-win ul,
+.ap-win ol { list-style: none; }
+.ap-fit[data-narrow] .ap-win { width: 880px; }
+.ap-fit[data-narrow] .ap-panel,
+.ap-fit[data-narrow] .ap-resize { display: none; }
+.ap-fit[data-narrow] .ap-well { padding-inline: 8px; }
+/* Both rails put away (Workspace.tsx): each leaves its way back in the
+   sheet's corner, and the text keeps 40px clear of them on both sides. */
+.ap-fit:not([data-narrow]) .ap-narrow-only { display: none; }
+.ap-fit[data-narrow] .ap-sheet { padding-inline: 40px; }
+
+/* One ground, the tone of the rails, and the page a sheet lying in it. */
+.ap-shell {
+  display: flex;
+  height: 100%;
+}
+.ap-well {
+  flex: 1;
+  min-width: 0;
+  padding-block: 8px;
+}
+.ap-sheet {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--ap-bg);
+  box-shadow:
+    0 0 0 1px oklch(0.25 0.0038 55 / 0.07),
+    0 1px 2px oklch(0.25 0.0038 55 / 0.04),
+    0 12px 32px -16px oklch(0.25 0.0038 55 / 0.12);
+}
+
+/* The resize handles either side of the well: 1px, nothing drawn at rest. */
+.ap-resize {
+  flex: none;
+  width: 1px;
+}
+
+/* ---- Rails: rows, buttons, labels ------------------------------------------------
+   An 8px inset and 8px of row padding: every glyph and label lands 16px in. */
+.ap-panel {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ap-surface);
+}
+.ap-side { width: var(--side, 256px); }
+.ap-chat { width: var(--chat, 320px); }
+.ap-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px;
+}
+.ap-pad { padding: 0 8px 8px; }
+.ap-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding-inline: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: color-mix(in srgb, var(--ap-fg) 82%, transparent);
+}
+.ap-row.is-current {
+  background: var(--ap-selected);
+  color: var(--ap-fg);
+  font-weight: 500;
+}
+.ap-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ap-btn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  color: var(--ap-muted);
+}
+.ap-muted { flex: none; color: var(--ap-muted); }
+.ap-back {
+  flex: 1;
+  min-width: 0;
+  color: var(--ap-muted);
+}
+.ap-back > svg { flex: none; }
+.ap-project {
+  font-weight: 600;
+  color: color-mix(in srgb, var(--ap-fg) 82%, transparent);
+}
+.ap-monogram {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ap-sunken);
+  box-shadow: inset 0 0 0 1px var(--ap-border);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ap-muted);
+}
+.ap-find {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding-inline: 10px 6px;
+  border-radius: 8px;
+  background: var(--ap-sunken);
+  color: var(--ap-muted);
+  font-size: 13px;
+}
+.ap-find > span { flex: 1; }
+.ap-kbd {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding-inline: 5px;
+  border-radius: 5px;
+  background: var(--ap-bg);
+  box-shadow:
+    0 0 0 1px var(--ap-border),
+    0 1px 0 var(--ap-border-strong);
+  color: var(--ap-muted);
+  font: 400 11px/1 var(--ap-mono);
+}
+
+/* Metadata is where the mono shows: section labels and counts. */
+.ap-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding-left: 8px;
+  font: 500 11px/1 var(--ap-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ap-muted);
+}
+.ap-section-pages { margin-top: 4px; }
+.ap-section-btns { display: flex; }
+.ap-nav {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 8px 8px;
+}
+.ap-pages {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.ap-twist {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  color: var(--ap-faint);
+}
+.ap-twist .is-open { transform: rotate(90deg); }
+.ap-row-icon { flex: none; color: var(--ap-muted); }
+.ap-emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+.ap-diff {
+  display: flex;
+  flex: none;
+  gap: 5px;
+  font: 400 11px/1 var(--ap-mono);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+.ap-diff .is-add { color: var(--ap-diff-add); }
+.ap-diff .is-del { color: var(--ap-diff-del); }
+/* The page the agent is editing: counted while its change waits, gone with Keep. */
+.ap-diff.is-live {
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--t-done) forwards,
+    ap-off 1ms linear var(--t-keep) forwards;
+}
+
+/* Below the pages, and apart from them: what the project is read alongside. */
+.ap-ctx {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  padding: 4px 8px 56px;
+  border-top: 1px solid var(--ap-border);
+}
+.ap-ctx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.ap-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+}
+.ap-feedback {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--ap-border);
+  border-radius: 16px;
+  background: var(--ap-elevated);
+  box-shadow:
+    0 1px 2px oklch(0.25 0.0038 55 / 0.05),
+    0 6px 20px oklch(0.25 0.0038 55 / 0.1);
+  color: var(--ap-muted);
+}
+
+/* ---- Chat --------------------------------------------------------------------
+   One take, as the app plays a turn (globals.css, .nt-transcript and on).
+   Each state is drawn in place and shown on its beat; the pieces that stack
+   (title, thinking or turn, each trace line) share one grid cell. */
+.ap-stack { display: grid; }
+.ap-stack > * { grid-area: 1 / 1; }
+/* Shown from --on, gone at --off. */
+.ap-at {
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--on) forwards,
+    ap-off 1ms linear var(--off, 999s) forwards;
+}
+
+.ap-thread { flex: 1; min-width: 0; }
+/* The title: "New chat" until the first send, then the ask itself, cut to
+   the row with an ellipsis. */
+.ap-thread-title { display: grid; }
+.ap-thread-title > span {
+  grid-area: 1 / 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* At the reset the ask goes out before "New chat" comes back in, so the two
+   never print over each other; the handover still ends with the fade. */
+.ap-title-new {
+  animation:
+    ap-off 1ms linear var(--t-clear) forwards,
+    ap-fade-in 150ms var(--ap-ease) calc(var(--t-reset) + 150ms) forwards;
+}
+.ap-title-ask {
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--t-clear) forwards,
+    ap-fade-out 150ms ease var(--t-reset) forwards;
+}
+
+/* Between the head and the composer. The bar sits at its foot, where the
+   app's column puts it, so nothing above it moves when it comes or goes. */
+.ap-chat-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+.ap-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding-inline: 24px;
+  text-align: center;
+  animation:
+    ap-off 1ms linear var(--t-clear) forwards,
+    ap-fade-in 300ms var(--ap-ease) var(--t-reset) forwards;
+}
+.ap-empty-h {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+.ap-empty-p {
+  max-width: 28ch;
+  font-size: 13px;
+  color: var(--ap-muted);
+}
+
+.ap-transcript {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 12px 12px;
+  animation: ap-fade-out 300ms ease var(--t-reset) forwards;
+}
+.ap-turn-text {
+  font-size: 13px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+/* Only the user's turns get a container. */
+.ap-turn.is-user {
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: var(--ap-sunken);
+  animation: ap-turn-in 360ms var(--ap-ease) var(--t-clear) both;
+}
+.ap-reply { align-items: start; }
+.ap-turn.is-assistant {
+  color: var(--ap-fg);
+  animation: ap-turn-in 360ms var(--ap-ease) var(--t-step1) both;
+}
+.ap-answer {
+  margin-top: 10px;
+  animation: ap-turn-in 360ms var(--ap-ease) var(--t-done) both;
+}
+
+/* Waiting on the agent: the amber dot, pulsing, in the rail's column. */
+.ap-pending {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: center;
+  font: 400 12px/1.5 var(--ap-mono);
+  color: var(--ap-muted);
+  animation:
+    ap-turn-in 360ms var(--ap-ease) var(--t-pending) both,
+    ap-off 1ms linear var(--t-step1) forwards;
+}
+.ap-pending-bead {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+}
+.ap-thinking {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ap-accent);
+  box-shadow:
+    0 0 4px var(--ap-accent-soft),
+    0 0 10px color-mix(in oklch, var(--ap-accent-soft) 60%, transparent);
+  animation: ap-pulse 1.15s var(--ap-ease) infinite;
+}
+
+/* The work behind the answer: a rail, a bead per act, a line for each. Each
+   act lands at --s-on and runs, its bead in the amber, until --s-done. */
+.ap-tr-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
+  padding: 3px 0;
+}
+/* Bead centre to bead centre, drawn as the second act arrives. */
+.ap-tr-item::before {
+  content: "";
+  position: absolute;
+  left: 8.5px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--ap-border-strong);
+  transform-origin: top;
+  animation: ap-rail-grow var(--ap-dur-slow) var(--ap-ease) var(--t-step2) both;
+}
+/* Drawn once, from the first bead down into the second, so it grows as one
+   line; the second bead paints over its end. */
+.ap-tr-item.is-first::before { top: 12px; bottom: -12px; }
+.ap-tr-item.is-last::before { display: none; }
+.ap-bead {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ap-surface);
+  color: var(--ap-accent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklch, var(--ap-accent) 60%, transparent),
+    0 0 0 3px color-mix(in oklch, var(--ap-accent-soft) 16%, transparent);
+  animation:
+    ap-bead-in var(--ap-dur-slow) var(--ap-ease) calc(var(--s-on) + 60ms) both,
+    ap-bead-glow 1.15s var(--ap-ease) var(--s-on) infinite,
+    ap-bead-done var(--ap-dur-slow) var(--ap-ease) var(--s-done) forwards;
+}
+.ap-bead svg { display: block; }
+.ap-tr-step {
+  min-width: 0;
+  animation: ap-step-in var(--ap-dur-slow) var(--ap-ease) calc(var(--s-on) + 90ms) both;
+}
+/* The line under way in full ink; done, it steps back to muted. */
+.ap-tr-label {
+  display: flex;
+  padding: 1px 0;
+  font: 400 12px/16px var(--ap-mono);
+  color: var(--ap-fg);
+  animation: ap-label-done var(--ap-dur) var(--ap-ease) var(--s-done) forwards;
+}
+.ap-tr-line {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  white-space: nowrap;
+}
+/* A grouped act can be opened to its calls, so it carries the chevron. */
+.ap-tr-chev {
+  flex: none;
+  align-self: center;
+  color: var(--ap-faint);
+}
+
+/* The thread's own answer to the change (ChatReviewBar): on the composer's
+   shoulders, the count, and the agent still at it — then the two buttons. */
+.ap-review {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0 8px 6px;
+  padding: 5px 5px 5px 12px;
+  border: 1px solid var(--ap-border);
+  border-radius: 12px;
+  background: var(--ap-elevated);
+  box-shadow: 0 6px 16px -8px oklch(0.25 0.0038 55 / 0.16);
+  animation:
+    ap-review-in 360ms var(--ap-spring) var(--t-review) both,
+    ap-off 1ms linear var(--t-keep) forwards;
+}
+.ap-review-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ap-review-count {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--ap-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ap-muted);
+}
+.ap-review-count.is-writing {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+  animation:
+    ap-gone 1ms linear var(--t-done) forwards,
+    ap-off 1ms linear var(--t-done) forwards;
+}
+/* Out of the row until writing ends, so the bar is the height it is in the app. */
+.ap-review-acts {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  opacity: 0;
+  animation:
+    ap-gone var(--t-done) linear,
+    ap-on 1ms linear var(--t-done) forwards;
+}
+.ap-review-btn {
+  display: inline-grid;
+  place-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ap-muted);
+  white-space: nowrap;
+}
+.ap-review-btn.is-keep {
+  background: var(--ap-fg);
+  color: var(--ap-bg);
+  animation:
+    ap-down-96 var(--ap-dur-fast) var(--ap-ease) var(--t-keep-down) forwards,
+    ap-up-96 var(--ap-dur) var(--ap-ease) var(--t-keeping) forwards,
+    ap-busy-keep 1ms linear var(--t-keeping) forwards;
+}
+/* Released, the click answers: both buttons busy (ChatReviewBar, globals.css
+   — ink keeps most of itself at .7, Discard .55), Keep saying so. */
+.ap-review-btn:not(.is-keep) {
+  animation: ap-busy 1ms linear var(--t-keeping) forwards;
+}
+.ap-keep-now { animation: ap-gone 1ms linear var(--t-keeping) forwards; }
+.ap-keep-ing { animation: ap-gone var(--t-keeping) linear; }
+
+.ap-composer {
+  margin: 0 8px 8px;
+  border: 1px solid var(--ap-border-strong);
+  border-radius: 12px;
+  background: var(--ap-elevated);
+  /* Holding the caret it darkens its line and lifts off the rail; after the
+     send the box keeps the caret, and lets it go when the hand presses on
+     the canvas. */
+  animation:
+    ap-focus-line var(--ap-dur-fast) var(--ap-ease) var(--t-ask) forwards,
+    ap-focus-lift var(--ap-dur) var(--ap-ease) var(--t-ask) forwards,
+    ap-blur-line var(--ap-dur-fast) var(--ap-ease) var(--t-grab) forwards,
+    ap-blur-lift var(--ap-dur) var(--ap-ease) var(--t-grab) forwards;
+}
+.ap-composer-input {
+  display: grid;
+  padding: 9px 11px 4px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ap-fg);
+}
+.ap-composer-input > * { grid-area: 1 / 1; }
+/* The placeholder, gone with the first key and back when the box clears. */
+.ap-q-ph {
+  position: relative;
+  color: var(--ap-muted);
+  animation:
+    ap-off 1ms linear var(--t-qtype) forwards,
+    ap-on 1ms linear var(--t-clear) forwards;
+}
+/* The caret at the empty box's start: waiting for the first key, and again
+   once the box has cleared. */
+.ap-q-ph::before,
+.ap-q-ph::after,
+.ap-qc::after {
+  content: "";
+  position: absolute;
+  top: 0.12em;
+  bottom: 0.04em;
+  width: 1.5px;
+  background: var(--ap-fg);
+  opacity: 0;
+}
+.ap-q-ph::before,
+.ap-q-ph::after { left: 0; }
+.ap-q-ph::before {
+  animation:
+    ap-on 1ms linear var(--t-ask) forwards,
+    ap-blink 1060ms linear calc(var(--t-ask) + 530ms) infinite,
+    ap-off 1ms linear var(--t-qtype) forwards;
+}
+.ap-q-ph::after {
+  animation:
+    ap-on 1ms linear var(--t-clear) forwards,
+    ap-blink 1060ms linear calc(var(--t-clear) + 530ms) infinite,
+    ap-off 1ms linear var(--t-grab) forwards;
+}
+.ap-q {
+  white-space: pre-wrap;
+  animation: ap-off 1ms linear var(--t-clear) forwards;
+}
+.ap-qc {
+  position: relative;
+  opacity: 0;
+  animation: ap-on 1ms linear var(--ws) forwards;
+}
+.ap-qc::after {
+  left: 100%;
+  animation:
+    ap-on 1ms linear var(--ws) forwards,
+    ap-off 1ms linear var(--we) forwards;
+}
+.ap-qc.is-last::after {
+  animation:
+    ap-on 1ms linear var(--ws) forwards,
+    ap-blink 1060ms linear calc(var(--ws) + 530ms) infinite,
+    ap-off 1ms linear var(--we) forwards;
+}
+.ap-composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px 5px;
+}
+.ap-composer-go {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ap-attach {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--ap-muted);
+}
+/* Beside Send while the answer runs, and quieter than it. */
+.ap-stop {
+  display: inline-grid;
+  place-items: center;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--ap-faint);
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--t-clear) forwards,
+    ap-off 1ms linear var(--t-done) forwards;
+}
+/* Nothing written yet: Send has no ground, and sits back a little. The ink
+   arrives with the first key, on the spring; Enter presses it, and it goes
+   back to rest as the box clears. */
+.ap-send {
+  display: inline-grid;
+  place-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ap-faint);
+  scale: 0.96;
+  animation:
+    ap-send-ink var(--ap-dur-fast) var(--ap-ease) var(--t-qtype) forwards,
+    ap-send-lift var(--ap-dur-slow) var(--ap-spring) var(--t-qtype) forwards,
+    ap-send-down var(--ap-dur-slow) var(--ap-spring) var(--t-send) forwards,
+    ap-send-dim var(--ap-dur-fast) var(--ap-ease) var(--t-clear) forwards,
+    ap-send-rest var(--ap-dur-slow) var(--ap-spring) var(--t-clear) forwards;
+}
+
+/* ---- The sheet's corner and its bar -------------------------------------------- */
+.ap-corner {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+/* The app places the corners on the well, 8px outside the sheet. */
+.ap-corner.is-left {
+  left: 2px;
+  right: auto;
+}
+.ap-fit[data-narrow] .ap-corner:not(.is-left) { right: 6px; }
+.ap-faces { display: flex; align-items: center; }
+/* Who else is here: portraits ringed in each person's colour, a ring of
+   paper between them where they overlap. */
+.ap-face {
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--face);
+  border-radius: 50%;
+  background-color: var(--ap-sunken);
+  background-repeat: no-repeat;
+  box-shadow: 0 0 0 2px var(--ap-bg);
+}
+.ap-face + .ap-face { margin-left: -6px; }
+.ap-face.is-pm {
+  --face: #aac3f9;
+  background-image: url("/hero/cast/pm.webp");
+  background-size: 63.7px 85.2px;
+  background-position: -19.6px -21px;
+}
+.ap-face.is-design {
+  --face: #ffcc62;
+  background-image: url("/hero/cast/designer.webp");
+  background-size: 61.6px 50px;
+  background-position: -26.4px -17.5px;
+}
+
+.ap-dock {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+  display: flex;
+  justify-content: center;
+}
+.ap-tb {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--ap-elevated);
+  box-shadow:
+    0 0 0 1px oklch(0.25 0.0038 55 / 0.06),
+    0 4px 12px oklch(0.25 0.0038 55 / 0.07),
+    0 16px 40px oklch(0.25 0.0038 55 / 0.1);
+}
+.ap-tb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  color: var(--ap-muted);
+}
+/* The tool in hand wears the bar's one ink mark. */
+.ap-tb-btn.is-on {
+  background: var(--ap-fg);
+  color: var(--ap-bg);
+}
+/* A standing setting that is on: inked glyph, no mark. */
+.ap-tb-btn.is-toggle { color: var(--ap-fg); }
+.ap-tb-btn.is-off { opacity: 0.35; }
+.ap-tb-shapes {
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+}
+.ap-tb-shapes .ap-tb-btn { width: 36px; }
+.ap-tb-caret {
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 38px;
+  margin-left: -4px;
+  padding-right: 4px;
+  box-sizing: content-box;
+  color: var(--ap-muted);
+}
+.ap-tb-sep {
+  width: 1px;
+  height: 22px;
+  margin-inline: 5px;
+  background: var(--ap-border);
+}
+.ap-tb-zoom {
+  display: inline-grid;
+  place-items: center;
+  min-width: 52px;
+  height: 34px;
+  padding: 0 6px;
+  border-radius: 10px;
+  font: 400 12px/1 var(--ap-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ap-muted);
+}
+
+/* ---- The page -------------------------------------------------------------------
+   The column: a 720px measure inside 56px gutters, 80px down. Scrolled so the
+   title sits at the top edge and the work below it is in view. */
+.ap-col {
+  max-width: 832px;
+  margin: -140px auto 0;
+  padding: 80px 56px;
+}
+.ap-toprow { min-height: 28px; margin-bottom: 40px; }
+.ap-title {
+  font-size: 42px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.ap-editor {
+  margin-top: 16px;
+  font-size: 15px;
+}
+/* BlockNote's own geometry: 3px between blocks, 3px inside them, 1.5 lines. */
+.ap-block {
+  margin-block: 3px;
+  line-height: 1.5;
+}
+.ap-bc { padding: 3px 0; }
+/* The code block gives up BlockNote's padding; only .ap-code's 4px stays. */
+.ap-bc.is-code { padding: 0; }
+.ap-p { white-space: pre-wrap; }
+.ap-h2 {
+  padding-top: 18px;
+  font-size: 2em;
+  font-weight: 700;
+}
+.ap-p code {
+  padding: 0.12em 0.34em;
+  border-radius: 4px;
+  background: var(--ap-sunken);
+  box-shadow: inset 0 0 0 1px var(--ap-border);
+  font-family: var(--ap-mono);
+  font-size: 0.88em;
+  color: var(--ap-fg);
+}
+
+.ap-tablewrap { padding: 9px 0 22px 9px; }
+.ap-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+.ap-table th,
+.ap-table td {
+  height: 35px;
+  padding: 5px 10px;
+  border: 1px solid #dddddd;
+  text-align: left;
+  vertical-align: top;
+}
+.ap-table th { font-weight: 700; }
+
+/* Code: square, dark, its language named in the bar above. */
+.ap-code {
+  margin: 4px 0;
+  background: var(--ap-code-bg);
+}
+.ap-code-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 34px;
+  padding: 0 5px 0 8px;
+  border-bottom: 1px solid var(--ap-code-border);
+  background: var(--ap-code-top);
+  color: var(--ap-code-muted);
+}
+.ap-code-lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+  padding: 2px 6px;
+  font: 400 11px/1 var(--ap-mono);
+}
+.ap-code-x {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+}
+.ap-code-body {
+  padding: 10px 14px;
+  font: 400 13px/1.6 var(--ap-mono);
+  color: #cfc9dd;
+}
+.ap-code-line { white-space: pre; }
+.ap-code .is-kw { color: #c3a6ff; }
+.ap-code .is-st { color: #a8d5b5; }
+.ap-code .is-nu { color: #f0b49b; }
+.ap-code .is-fn { color: #93c5e8; }
+.ap-code .is-ty { color: #e0c48c; }
+.ap-code .is-pu { color: #b3adc4; }
+.ap-code .is-cm { color: #6f6a86; font-style: italic; }
+
+/* ---- The autocomplete -------------------------------------------------------------
+   Paused, on its first frame, until the loop is on screen. */
+.ap-loop:not(.is-on) *,
+.ap-loop:not(.is-on) *::before,
+.ap-loop:not(.is-on) *::after { animation-play-state: paused !important; }
+
+/* Typed: each key lands on its beat, the writer's caret riding the newest. */
+.ap-c { position: relative; }
+.ap-fresh .ap-c:not(.is-end) {
+  opacity: 0;
+  animation: ap-on 1ms linear var(--ws) forwards;
+}
+.ap-c::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 0.12em;
+  bottom: 0.04em;
+  width: 1.5px;
+  background: var(--ap-fg);
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--ws) forwards,
+    ap-off 1ms linear var(--we) forwards;
+}
+/* Where the caret waits before the loop types, and where it rests after. */
+.ap-c.is-pre::after {
+  opacity: 1;
+  animation:
+    ap-blink 1060ms linear 530ms infinite,
+    ap-off 1ms linear var(--t-type) forwards;
+}
+.ap-c.is-last::after {
+  animation:
+    ap-on 1ms linear var(--ws) forwards,
+    ap-blink 1060ms linear calc(var(--ws) + 530ms) infinite,
+    ap-off 1ms linear var(--t-accept) forwards;
+}
+.ap-c.is-end::after {
+  animation:
+    ap-on 1ms linear var(--t-accept) forwards,
+    ap-blink 1060ms linear calc(var(--t-accept) + 530ms) infinite,
+    ap-off 1ms linear var(--t-ask) forwards;
+}
+.ap-fresh { animation: ap-off 300ms ease var(--t-reset) forwards; }
+
+/* The suggestion: ghost ink, ending in the model's amber head. */
+.ap-ghost { color: var(--ap-ghost); }
+.ap-tail {
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--t-think) forwards,
+    ap-ink 1ms linear var(--t-accept) forwards;
+}
+.ap-tail::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  border-radius: 1px;
+  background: var(--ap-accent);
+  box-shadow:
+    0 0 4px var(--ap-accent-soft),
+    0 0 10px var(--ap-accent-soft),
+    0 0 22px color-mix(in oklch, var(--ap-accent-soft) 55%, transparent);
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--t-think) forwards,
+    ap-pulse 1.15s var(--ap-ease) var(--t-think) infinite,
+    ap-on 1ms linear var(--t-wait) forwards,
+    ap-off 1ms linear var(--t-accept) forwards;
+}
+/* What it is doing, said at the caret: a word while it draws, then the two
+   keys that answer it. One cell, so the line never changes length. */
+.ap-status {
+  display: inline-grid;
+  margin-left: 7px;
+  color: var(--ap-muted);
+  font-size: 0.8em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ap-status > * {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  opacity: 0;
+}
+.ap-st-draw {
+  animation:
+    ap-on 1ms linear var(--t-draw) forwards,
+    ap-off 1ms linear var(--t-wait) forwards;
+}
+.ap-st-wait {
+  animation:
+    ap-on 1ms linear var(--t-wait) forwards,
+    ap-off 1ms linear var(--t-accept) forwards;
+}
+.ap-key {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--ap-accent) 10%, transparent);
+  font: 400 11px/1.5 var(--ap-mono);
+  letter-spacing: 0.06em;
+  color: var(--ap-accent);
+}
+.ap-key.is-quiet {
+  margin-left: 0.5em;
+  background: var(--ap-sunken);
+  color: var(--ap-muted);
+}
+.ap-key.is-tab { animation: ap-press 1ms linear var(--t-press) forwards; }
+
+/* The band the diagram is drawn in: no box, no ground. It opens under the
+   paragraph, grows as the shapes need it (keyframes from AppProject.tsx) and
+   clips what has arrived below the edge it has reached. The app wraps it in a
+   block of its own inside the paragraph's flex column, where nothing
+   collapses: that block's 3px top margin and BlockNote's 3px content padding
+   put 6px above the band and 3px below it. */
+.ap-band {
+  position: relative;
+  box-sizing: content-box;
+  height: var(--band);
+  margin-top: 6px;
+  padding-bottom: 3px;
+  animation: ap-band var(--loop) linear both;
+}
+/* The clip is the drawing's, not the band's, so the change's marks around
+   the block (its ring, the margin rule, the gutter pair) are not cut. */
+.ap-band-in {
+  position: absolute;
+  inset: 0 0 3px;
+  clip-path: inset(0 -100vmax);
+  animation: ap-off 300ms ease var(--t-reset) forwards;
+}
+/* The agent's change, waiting (editor.css, .nt-diff-whole): a green wash
+   under the whole block with a 3px ring of it, and the rule in the margin.
+   It comes up when writing ends and goes in one frame with Keep. */
+/* On the block content, as blockMark puts it: BlockNote's 3px padding above
+   the band and the band's own 3px below are inside it. */
+.ap-wash {
+  position: absolute;
+  inset: -3px 0 0;
+  border-radius: 4px;
+  background: var(--ap-diff-add-bg);
+  box-shadow: 0 0 0 3px var(--ap-diff-add-bg);
+  animation:
+    ap-wash-in 420ms var(--ap-ease) var(--t-done) both,
+    ap-off 1ms linear var(--t-keep) forwards;
+}
+.ap-wash::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -14px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--ap-diff-add-line);
+  transform-origin: top;
+  animation: ap-rule-in 360ms var(--ap-ease) var(--t-done) both;
+}
+/* Zero height at the block's top, so the pair hangs in the right gutter. */
+.ap-acts {
+  position: absolute;
+  top: -3px;
+  left: 0;
+  right: 0;
+  height: 0;
+  animation: ap-off 1ms linear var(--t-keep) forwards;
+}
+.ap-acts-in {
+  position: absolute;
+  top: -1px;
+  left: 100%;
+  display: flex;
+  gap: 2px;
+  margin-left: 10px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--ap-elevated);
+  box-shadow:
+    0 0 0 1px oklch(0.25 0.0038 55 / 0.07),
+    0 1px 2px oklch(0.25 0.0038 55 / 0.06),
+    0 6px 16px -6px oklch(0.25 0.0038 55 / 0.14);
+  transform-origin: left center;
+  animation: ap-acts-in var(--ap-dur-slow) var(--ap-spring) calc(var(--t-done) + 170ms) both;
+}
+.ap-act {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--ap-muted);
+}
+.ap-act.is-keep {
+  background: var(--ap-fg);
+  color: var(--ap-bg);
+}
+/* Sheet only, there is no chat to answer from: the gutter's ✓ takes it. */
+.ap-fit[data-narrow] .ap-act.is-keep {
+  animation: ap-down-90 var(--ap-dur-fast) var(--ap-ease) var(--t-keep-down) forwards;
+}
+.ap-grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, oklch(0.25 0.0038 55 / 0.16) 1px, transparent 1.2px);
+  background-size: 16px 16px;
+  mask-image:
+    linear-gradient(to right, transparent, #000 10%, #000 90%, transparent),
+    linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+  mask-composite: intersect;
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--t-think) forwards,
+    ap-stir 2.4s var(--ap-ease) var(--t-think) infinite,
+    ap-off 600ms var(--ap-ease) var(--t-wait) forwards;
+}
+/* The dots the canvas shows while it holds a selection (canvas.css,
+   .nt-canvas-grid): graphite at a whisper, scene (0, 0) on a dot at the
+   text's edge, in and out on the slow beat. */
+.ap-hold {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, oklch(0.25 0.0038 55 / 0.09) 1px, transparent 1.2px);
+  background-size: 16px 16px;
+  background-position: -8px -8px;
+  opacity: 0;
+  animation:
+    ap-fade-in var(--ap-dur-slow) var(--ap-ease) var(--t-grab) both,
+    ap-fade-out var(--ap-dur-slow) var(--ap-ease) var(--t-desel) forwards;
+}
+/* Sheet only, the band is 24px in from the scene on each side. */
+.ap-fit[data-narrow] .ap-hold { background-position: 0 -8px; }
+/* The real renderer at half strength; Tab takes it as it stands, in one frame. */
+/* Laid out for the 720px measure; centred on a narrower one (the 672px
+   column of the sheet-only view) so the drawing stays centred. */
+.ap-scene {
+  position: absolute;
+  left: calc(50% - 360px);
+  top: 0;
+  width: 720px;
+  height: var(--band);
+  opacity: 0.5;
+  animation: ap-on 1ms linear var(--t-accept) forwards;
+}
+.ap-arrive { animation: ap-arrive 520ms var(--ap-ease) var(--at) both; }
+/* The screens, as the canvas draws shapes: the AI's default box (#f2f2f0 on
+   #d8d8d4, 10px corners, #2b2b28 ink, the page font), frames in white, and
+   the onboarding slate and sage for fills. Text is a shape with no box. */
+.ap-ui {
+  position: absolute;
+  box-sizing: border-box;
+  color: #2b2b28;
+  font-size: 12px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.ap-ui.is-bold { font-weight: 600; letter-spacing: -0.01em; }
+.ap-ui.is-muted { color: #6b6b66; white-space: normal; }
+.ap-ui.is-frame {
+  border: 1px solid #d8d8d4;
+  border-radius: 22px;
+  background: #ffffff;
+}
+.ap-ui.is-island { border-radius: 999px; background: #2b2b28; }
+.ap-ui.is-box,
+.ap-ui.is-btn,
+.ap-ui.is-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d8d8d4;
+  border-radius: 10px;
+  background: #f2f2f0;
+}
+.ap-ui.is-box { justify-content: center; font-weight: 500; }
+.ap-ui.is-btn {
+  justify-content: center;
+  border-color: #2b2b28;
+  background: #2b2b28;
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.ap-ui.is-input {
+  padding: 0 10px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #9a9a94;
+  font-size: 10.5px;
+}
+.ap-ui.is-dot { border: 2px solid #ffffff; border-radius: 50%; }
+.ap-ui.is-rule { background: #d8d8d4; }
+.ap-ui.tone-slate { border-color: #cdd5e5; background: #eef1f7; color: #2f3546; }
+.ap-ui.tone-sage { border-color: #c6dad3; background: #e9f2ef; color: #27403a; }
+.ap-ui.tone-grey { border-color: #d8d8d4; background: #f2f2f0; }
+.ap-ui.tone-white { border-color: #cdd5e5; background: #ffffff; }
+.ap-ui.is-dot.tone-slate,
+.ap-ui.is-dot.tone-sage,
+.ap-ui.is-dot.tone-grey { border-color: #ffffff; }
+/* Dark mode, as the agent restyles it: each screen's shapes switch on its
+   beat (--dk), over --dur, straight from light to dark. The same quiet warm
+   greys a step from black, slate and sage their dark counterparts, buttons
+   inverted so they still lead. Edges and their labels are the page's and
+   stay as they are. */
+.ap-ui {
+  --d-ink: #ecebe7;
+  --d-bg: transparent;
+  --d-bd: transparent;
+}
+.ap-ui.ap-arrive {
+  animation:
+    ap-arrive 520ms var(--ap-ease) var(--at) both,
+    ap-dark var(--ap-dur) var(--ap-ease) var(--dk) forwards;
+}
+/* The button the hand moves rides the drag, and stays where it is put until
+   the reset takes the band away. */
+.ap-ui.ap-arrive.is-moved {
+  animation:
+    ap-arrive 520ms var(--ap-ease) var(--at) both,
+    ap-dark var(--ap-dur) var(--ap-ease) var(--dk) forwards,
+    ap-drag var(--drag) var(--hand) var(--t-drag) both;
+}
+.ap-ui.is-muted { --d-ink: #a3a29c; }
+.ap-ui.is-frame { --d-bg: #1d1d1b; --d-bd: #3b3b37; }
+.ap-ui.is-island { --d-bg: #000000; }
+.ap-ui.is-box,
+.ap-ui.is-btn,
+.ap-ui.is-input { --d-bg: #2c2c29; --d-bd: #42423e; }
+.ap-ui.is-btn { --d-bg: #ecebe7; --d-bd: #ecebe7; --d-ink: #1d1d1b; }
+.ap-ui.is-input { --d-bg: #242422; --d-bd: #64635e; --d-ink: #8c8b85; }
+.ap-ui.is-rule { --d-bg: #3b3b37; }
+.ap-ui.tone-slate { --d-bd: #3d4453; --d-bg: #262a33; --d-ink: #d6dbe6; }
+.ap-ui.tone-sage { --d-bd: #394a43; --d-bg: #232e2a; --d-ink: #cfe0d9; }
+.ap-ui.tone-grey { --d-bd: #42423e; --d-bg: #2c2c29; }
+.ap-ui.tone-white { --d-bd: #3d4453; --d-bg: #1d1d1b; }
+.ap-ui.is-dot.tone-slate,
+.ap-ui.is-dot.tone-sage,
+.ap-ui.is-dot.tone-grey { --d-bd: #1d1d1b; }
+/* Dots are small and ringed in the frame's own black: a step lighter (each
+   tone's edge colour) so they read as clearly as they do in light. */
+.ap-ui.is-dot.tone-slate { --d-bg: #3d4453; }
+.ap-ui.is-dot.tone-sage { --d-bg: #394a43; }
+.ap-ui.is-dot.tone-grey { --d-bg: #42423e; }
+.ap-edge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  fill: none;
+  stroke: var(--ap-edge);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ap-edge marker path { fill: var(--ap-edge); stroke: none; }
+.ap-say.ap-arrive {
+  animation:
+    ap-arrive 520ms var(--ap-ease) var(--at) both,
+    ap-washed 420ms var(--ap-ease) var(--t-done) forwards,
+    ap-unwashed 1ms linear var(--t-keep) forwards;
+}
+/* The canvas overlay (render/overlay.css), on the scene's px: hairlines and
+   grips at 1px of the window, the selection blue for the frame, the grips and
+   the readout, neutral greys for the hover ring and the guide. Each part
+   switches on its beat; the frame and the chip ride the drag. */
+.ap-ov {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.ap-ov-hover,
+.ap-ov-outline,
+.ap-ov-guides { fill: none; stroke-width: 1; }
+.ap-ov-hover {
+  stroke: oklch(0.5 0.0052 55);
+  stroke-opacity: 0.55;
+  opacity: 0;
+  animation:
+    ap-fade-in var(--ap-dur-fast) var(--ap-ease) var(--t-hover) both,
+    ap-off 1ms linear var(--t-grab) forwards;
+}
+.ap-ov-guides {
+  stroke: oklch(0.42 0.0048 55);
+  stroke-linecap: butt;
+  shape-rendering: crispEdges;
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--t-drag) forwards,
+    ap-off 1ms linear var(--t-drop) forwards;
+}
+.ap-ov-frame {
+  opacity: 0;
+  animation:
+    ap-on 1ms linear var(--t-grab) forwards,
+    ap-off 1ms linear var(--t-desel) forwards,
+    ap-drag var(--drag) var(--hand) var(--t-drag) both;
+}
+.ap-ov-outline {
+  stroke: var(--ap-select);
+  animation: ap-fade-in var(--ap-dur-fast) var(--ap-ease) var(--t-grab) both;
+}
+/* Square, a touch heavier than the frame, and in a corner at a time. */
+.ap-ov-grips > rect {
+  fill: #ffffff;
+  stroke: var(--ap-select);
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ap-grip-in var(--ap-dur-slow) var(--ap-spring) var(--t-grab) both;
+}
+/* Only while the drag runs, easing in as it starts. */
+.ap-ov-chip {
+  opacity: 0;
+  animation:
+    ap-fade-in var(--ap-dur) var(--ap-ease) var(--t-drag) both,
+    ap-off 1ms linear var(--t-drop) forwards,
+    ap-drag var(--drag) var(--hand) var(--t-drag) both;
+}
+.ap-ov-chip rect { fill: var(--ap-select); }
+.ap-ov-chip text {
+  fill: oklch(1 0 55);
+  font: 500 11px var(--ap-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- The rails turn over ----------------------------------------------------------
+   What a rail's place holds, one face at a time (globals.css, .nt-rail-face):
+   pressing the button makes its diagram the active one, and each rail's face
+   slides toward its own edge and fades as the diagram's panel comes in from
+   that edge a beat later, on the spring; the press off the diagram turns
+   them back. Each face fills the rail; the sheet beside it never moves. */
+.ap-rail-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+.ap-rail-face.is-pages,
+.ap-rail-face.is-chat {
+  animation:
+    ap-off var(--ap-dur) var(--ap-ease) var(--t-grab) forwards,
+    ap-rail-l 250ms var(--ap-ease) var(--t-grab) forwards,
+    ap-on 220ms var(--ap-ease) calc(var(--t-desel) + 50ms) forwards,
+    ap-rail-home 360ms var(--ap-spring) calc(var(--t-desel) + 40ms) forwards;
+}
+.ap-rail-face.is-layers,
+.ap-rail-face.is-design {
+  opacity: 0;
+  translate: -16px 0;
+  background: var(--ap-surface);
+  animation:
+    ap-on 220ms var(--ap-ease) calc(var(--t-grab) + 50ms) forwards,
+    ap-rail-home 360ms var(--ap-spring) calc(var(--t-grab) + 40ms) forwards,
+    ap-off var(--ap-dur) var(--ap-ease) var(--t-desel) forwards,
+    ap-rail-l 250ms var(--ap-ease) var(--t-desel) forwards;
+}
+/* The right rail's faces go the other way. */
+.ap-rail-face.is-chat { animation-name: ap-off, ap-rail-r, ap-on, ap-rail-home; }
+.ap-rail-face.is-design { translate: 16px 0; animation-name: ap-on, ap-rail-home, ap-off, ap-rail-r; }
+@keyframes ap-rail-l { to { translate: -16px 0; } }
+@keyframes ap-rail-r { to { translate: 16px 0; } }
+@keyframes ap-rail-home { to { translate: 0 0; } }
+
+/* Layers (layers.css): the list is scanned, not read — 28px rows, a grey
+   wash for the selection, never a ring. Nothing on the canvas is a group,
+   so there is no twist column, and the rows arrive as a list, top first. */
+.ap-lyr {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  padding-top: 8px;
+}
+.ap-section.ap-lyr-head { flex: none; padding-inline: 18px 16px; }
+.ap-meta {
+  font: 400 11px/1 var(--ap-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  color: var(--ap-muted);
+}
+.ap-lyr-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 8px 8px;
+}
+.ap-lyr-edges {
+  flex: none;
+  padding: 0 8px 8px;
+}
+.ap-lyr-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 3px 0 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--ap-muted);
+  animation: ap-lyr-in var(--ap-dur-slow) var(--ap-ease) calc(var(--t-grab) + var(--i, 0) * 5ms) backwards;
+}
+.ap-lyr-row.is-selected {
+  background: var(--ap-selected);
+  color: var(--ap-fg);
+  animation:
+    ap-lyr-in var(--ap-dur-slow) var(--ap-ease) calc(var(--t-grab) + var(--i, 0) * 5ms) backwards,
+    ap-unselect 1ms linear var(--t-desel) forwards;
+}
+.ap-lyr-icon { flex: none; }
+@keyframes ap-lyr-in { from { opacity: 0; transform: translateY(6px); } }
+@keyframes ap-unselect { to { background: transparent; color: var(--ap-muted); } }
+
+/* Design (panel.css, controls.css): the chat's rail and width, one column of
+   sections with a hairline between them. Every row is the same grid — two
+   fields and a 24px slot kept whether or not it is used — and every field a
+   sunken 28px well that names itself in the mono voice. No colour but the
+   drawing's own. */
+.ap-style {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.ap-section.ap-style-head { flex: none; padding-inline: 8px; }
+.ap-style-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.ap-style-body > :not(:first-child) { border-top: 1px solid var(--ap-border); }
+.ap-btn.is-sm { width: 24px; height: 24px; border-radius: 4px; }
+.ap-btn.is-off { opacity: 0.4; }
+.ap-align {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 6px 8px;
+}
+.ap-align-group { display: flex; align-items: center; gap: 1px; }
+.ap-sec-head {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 32px;
+  margin-top: 6px;
+  padding-inline: 16px 8px;
+}
+.ap-sec-title {
+  flex: 1;
+  font: 500 11px/1 var(--ap-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ap-muted);
+}
+.ap-sec-head .is-open { transform: rotate(90deg); }
+.ap-sec-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 2px 8px 14px;
+}
+.ap-grid-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 24px;
+  align-items: center;
+  gap: 6px;
+}
+.ap-grid-row > .ap-btn { justify-self: center; }
+.ap-grid-row.is-apart {
+  margin-top: 2px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ap-border);
+}
+.ap-flex-row { display: flex; align-items: center; gap: 6px; }
+.ap-fld {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  height: 28px;
+  padding-inline: 8px;
+  border-radius: 6px;
+  background: var(--ap-sunken);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ap-fg);
+}
+.ap-fld.has-mark { padding-left: 0; }
+.ap-fld.is-wide { grid-column: 1 / 3; flex: 1; }
+.ap-fld.is-narrow { flex: 0 0 68px; }
+.ap-fld-mark {
+  display: inline-flex;
+  flex: none;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  padding-inline: 6px 2px;
+  font: 400 11px/1 var(--ap-mono);
+  color: var(--ap-muted);
+}
+.ap-fld-val { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; }
+.ap-fld-unit { flex: none; font: 400 12px/1 var(--ap-mono); color: var(--ap-muted); }
+.ap-chip {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px oklch(0.25 0.0038 55 / 0.12);
+}
+.ap-slider {
+  position: relative;
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--ap-fg);
+}
+.ap-slider::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  top: -5px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ap-bg);
+  box-shadow: 0 0 0 1px var(--ap-border-strong), 0 1px 2px oklch(0.25 0.0038 55 / 0.12);
+}
+.ap-seg {
+  grid-column: 1 / -1;
+  display: flex;
+  height: 28px;
+  padding: 2px;
+  border-radius: 6px;
+  background: var(--ap-sunken);
+  font-size: 13px;
+  color: var(--ap-muted);
+}
+.ap-seg > span {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  border-radius: 4px;
+}
+.ap-seg > .is-on {
+  background: var(--ap-bg);
+  box-shadow: 0 0 0 1px oklch(0.25 0.0038 55 / 0.07), 0 1px 2px oklch(0.25 0.0038 55 / 0.06);
+  color: var(--ap-fg);
+}
+
+/* ---- The hand -------------------------------------------------------------------
+   The system's arrow at its real size — ink with a paper edge and a soft
+   shadow, its tip on the point — over everything in the window. It moves on
+   the track for the view (keyframes from AppProject.tsx) and presses from its
+   tip. At rest, before the loop plays and with reduced motion, it is where the
+   take begins and ends. */
+.ap-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  pointer-events: none;
+  translate: var(--rest-w);
+  animation: ap-hand-w var(--loop) linear both;
+}
+.ap-fit[data-narrow] .ap-cursor {
+  translate: var(--rest-n);
+  animation-name: ap-hand-n;
+}
+.ap-cursor svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  filter: drop-shadow(0 1px 1.5px rgb(0 0 0 / 0.32));
+}
+.ap-cursor path {
+  stroke: #ffffff;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+/* The arrow's point is its hotspot; the I-beam's is its middle. Each presses
+   from there, and the one not in use is hidden. */
+.ap-arrow {
+  margin: -2px 0 0 -3px;
+  transform-origin: 3px 2px;
+  animation:
+    ap-press-w var(--loop) linear both,
+    ap-arrow-w var(--loop) step-end both;
+}
+.ap-arrow path {
+  fill: #000000;
+  stroke-width: 2.6;
+}
+.ap-beam {
+  margin: -9px 0 0 -4.5px;
+  opacity: 0;
+  transform-origin: 4.5px 9px;
+  animation:
+    ap-press-w var(--loop) linear both,
+    ap-beam-w var(--loop) step-end both;
+}
+.ap-beam path {
+  fill: none;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+/* Drawn twice: the paper edge under, the ink line over it. */
+.ap-beam path + path { stroke: #000000; stroke-width: 1.2; }
+.ap-fit[data-narrow] .ap-arrow { animation: ap-press-n var(--loop) linear both; }
+.ap-fit[data-narrow] .ap-beam { animation: none; }
+
+.ap-say {
+  position: absolute;
+  translate: -50% -50%;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--ap-bg);
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--ap-fg);
+}
+
+@keyframes ap-on { to { opacity: 1; } }
+@keyframes ap-off { to { opacity: 0; } }
+@keyframes ap-blink {
+  0%, 49.9% { opacity: 0; }
+  50%, 100% { opacity: 1; }
+}
+@keyframes ap-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes ap-stir {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+@keyframes ap-ink { to { color: var(--ap-fg); } }
+@keyframes ap-press { to { background: color-mix(in oklch, var(--ap-accent) 26%, transparent); } }
+@keyframes ap-arrive {
+  from { opacity: 0; filter: blur(4px); }
+}
+@keyframes ap-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ap-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes ap-gone {
+  from, to { display: none; }
+}
+@keyframes ap-dark {
+  to {
+    background-color: var(--d-bg);
+    border-color: var(--d-bd);
+    color: var(--d-ink);
+  }
+}
+/* An edge label's ground is the page under it, washed or not. */
+@keyframes ap-washed {
+  from { background-color: var(--ap-bg); }
+  to { background-color: var(--ap-diff-add-bg); }
+}
+@keyframes ap-unwashed { to { background-color: var(--ap-bg); } }
+@keyframes ap-turn-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+@keyframes ap-rail-grow {
+  from { transform: scaleY(0); }
+}
+@keyframes ap-bead-in {
+  from { opacity: 0; transform: scale(0.55); }
+}
+@keyframes ap-bead-glow {
+  50% {
+    box-shadow:
+      inset 0 0 0 1px var(--ap-accent),
+      0 0 0 4px color-mix(in oklch, var(--ap-accent-soft) 30%, transparent),
+      0 0 10px color-mix(in oklch, var(--ap-accent-soft) 45%, transparent);
+  }
+}
+@keyframes ap-bead-done {
+  from {
+    color: var(--ap-accent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklch, var(--ap-accent) 60%, transparent),
+      0 0 0 3px color-mix(in oklch, var(--ap-accent-soft) 16%, transparent);
+  }
+  to {
+    color: var(--ap-muted);
+    box-shadow:
+      inset 0 0 0 1px var(--ap-border-strong),
+      0 0 0 3px transparent;
+  }
+}
+@keyframes ap-step-in {
+  from { opacity: 0; transform: translateX(-3px); }
+}
+@keyframes ap-label-done {
+  from { color: var(--ap-fg); }
+  to { color: var(--ap-muted); }
+}
+@keyframes ap-review-in {
+  from { opacity: 0; transform: translateY(12px); }
+}
+@keyframes ap-focus-line {
+  from { border-color: var(--ap-border-strong); }
+  to { border-color: var(--ap-line-active); }
+}
+@keyframes ap-focus-lift {
+  from { box-shadow: 0 6px 20px -8px oklch(0.25 0.0038 55 / 0); }
+  to { box-shadow: 0 6px 20px -8px oklch(0.25 0.0038 55 / 0.2); }
+}
+@keyframes ap-blur-line {
+  from { border-color: var(--ap-line-active); }
+  to { border-color: var(--ap-border-strong); }
+}
+@keyframes ap-blur-lift {
+  from { box-shadow: 0 6px 20px -8px oklch(0.25 0.0038 55 / 0.2); }
+  to { box-shadow: 0 6px 20px -8px oklch(0.25 0.0038 55 / 0); }
+}
+@keyframes ap-send-ink {
+  from { background-color: transparent; color: var(--ap-faint); }
+  to { background-color: var(--ap-fg); color: var(--ap-bg); }
+}
+@keyframes ap-send-lift {
+  from { scale: 0.96; }
+  to { scale: 1; }
+}
+@keyframes ap-send-down {
+  from { scale: 1; }
+  to { scale: 0.95; }
+}
+@keyframes ap-send-dim {
+  from { background-color: var(--ap-fg); color: var(--ap-bg); }
+  to { background-color: transparent; color: var(--ap-faint); }
+}
+@keyframes ap-send-rest {
+  from { scale: 0.95; }
+  to { scale: 0.96; }
+}
+@keyframes ap-down-96 { to { scale: 0.96; } }
+@keyframes ap-up-96 { from { scale: 0.96; } to { scale: 1; } }
+@keyframes ap-busy { to { opacity: 0.55; } }
+@keyframes ap-busy-keep { to { opacity: 0.7; } }
+@keyframes ap-down-90 { to { scale: 0.9; } }
+@keyframes ap-wash-in {
+  from {
+    background-color: transparent;
+    box-shadow: 0 0 0 3px transparent;
+  }
+}
+@keyframes ap-rule-in {
+  from { opacity: 0; transform: scaleY(0.2); }
+}
+@keyframes ap-drag { to { transform: translateY(var(--drag-y)); } }
+@keyframes ap-grip-in { from { transform: scale(0); } }
+@keyframes ap-acts-in {
+  from { opacity: 0; filter: blur(4px); transform: scale(0.9); }
+}
+
+/* Still: the take's end, kept — the sentence in ink, the screens in place and
+   dark, the chat holding the ask, the finished trace and the answer, and
+   nothing waiting for a decision. */
+@media (prefers-reduced-motion: reduce) {
+  .ap-loop *,
+  .ap-loop *::before,
+  .ap-loop *::after { animation: none !important; }
+  .ap-fresh .ap-c:not(.is-end),
+  .ap-tail,
+  .ap-scene { opacity: 1; }
+  .ap-tail { color: var(--ap-fg); }
+  .ap-c.is-pre::after { opacity: 0; }
+  .ap-loop .ap-ui.ap-ui {
+    background-color: var(--d-bg);
+    border-color: var(--d-bd);
+    color: var(--d-ink);
+  }
+  .ap-title-new,
+  .ap-empty,
+  .ap-pending { opacity: 0; }
+  .ap-title-ask,
+  .ap-tr-line.is-end { opacity: 1; }
+  .ap-review,
+  .ap-wash,
+  .ap-acts { display: none; }
+  .ap-bead {
+    color: var(--ap-muted);
+    box-shadow: inset 0 0 0 1px var(--ap-border-strong);
+  }
+  .ap-tr-label { color: var(--ap-muted); }
+  /* The button where the hand put it; the hand resting, nothing selected. */
+  .ap-loop .ap-ui.is-moved { transform: translateY(var(--drag-y)); }
+}

@@ -1,0 +1,165 @@
+/* /terms and /privacy, in the home page's world. The root, bar, hero canvas
+   and footer come from app/ideas/2/idea2.css; this adds the header, the
+   sticky contents and the document sheet. */
+
+.lg-head {
+  width: min(780px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(72px, 12vh, 128px) 0 clamp(60px, 9vh, 100px);
+  text-align: center;
+}
+.lg-head > * { zoom: var(--airy); }
+.lg-kicker,
+.lg-date {
+  margin: 0;
+  font: 500 12px/1 var(--i2-mono), ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #80868d;
+}
+.lg-title {
+  margin: 18px 0 0;
+  font-size: clamp(40px, 5vw, 4.25rem);
+  line-height: 1.04;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--ic-ink);
+}
+.lg-lede {
+  max-width: 54ch;
+  margin: 22px auto 0;
+  font-size: clamp(17px, 1.5vw, 19px);
+  line-height: 1.55;
+  color: var(--ink-2);
+  text-wrap: pretty;
+}
+.lg-date { margin-top: 24px; }
+
+/* The ground line, then the document on the grey: contents on the left that
+   stay in view, the sheet on the right. Bottom room is for the cast, who
+   stand on the footer's top rule. */
+.lg-wrap {
+  --rule: 1.5px solid #d6dade;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 760px);
+  justify-content: center;
+  gap: 48px;
+  width: min(1200px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(56px, 8vh, 88px) 0 clamp(190px, 24vh, 250px);
+}
+.i2-hero:has(.lg-head) { border-bottom: 1.5px solid #d6dade; }
+.lg-toc {
+  position: sticky;
+  top: calc(14px + 56px * var(--airy) + 28px);
+  align-self: start;
+  zoom: var(--airy);
+}
+.lg-toc-h {
+  margin: 4px 0 14px;
+  font: 500 11.5px/1 var(--i2-mono), ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #80868d;
+}
+.lg-toc ol {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lg-toc a {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  padding: 5px 8px 5px 0;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--ink-2);
+  text-decoration: none;
+  transition: color 140ms;
+}
+.lg-toc a span {
+  padding-top: 1px;
+  font: 500 11px/1.35 var(--i2-mono), ui-monospace, monospace;
+  color: #9aa0a6;
+}
+.lg-toc a:hover { color: var(--ic-ink); }
+.lg-toc a:focus-visible,
+.lg-sheet a:focus-visible { outline: 2px solid #16181a; outline-offset: 2px; }
+
+.lg-sheet {
+  padding: clamp(28px, 4vw, 56px);
+  border: var(--rule);
+  background: #ffffff;
+}
+.lg-sheet > * { zoom: var(--airy); }
+.lg-section { scroll-margin-top: calc(14px + 56px * var(--airy) + 28px); }
+.lg-section + .lg-section {
+  margin-top: 44px;
+  padding-top: 40px;
+  border-top: 1px solid #e6e9ec;
+}
+.lg-section h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 0 0 16px;
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ic-ink);
+}
+.lg-section h2 span {
+  font: 500 12px/1 var(--i2-mono), ui-monospace, monospace;
+  color: #9aa0a6;
+}
+.lg-section p,
+.lg-section li {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #33373b;
+  text-wrap: pretty;
+}
+.lg-section p { margin: 0 0 14px; }
+.lg-section p:last-child { margin-bottom: 0; }
+.lg-section ul {
+  display: grid;
+  gap: 10px;
+  margin: 4px 0 16px;
+  padding: 0;
+  list-style: none;
+}
+.lg-section li {
+  position: relative;
+  padding-left: 20px;
+}
+.lg-section li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #9aa0a6;
+}
+.lg-section strong { font-weight: 600; color: var(--ic-ink); }
+.lg-section a {
+  color: var(--ic-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #c3c9cf;
+}
+.lg-section a:hover { text-decoration-color: var(--ic-ink); }
+
+@media (max-width: 960px) {
+  .lg-wrap { grid-template-columns: minmax(0, 760px); gap: 0; }
+  .lg-toc { display: none; }
+}
+@media (max-width: 520px) {
+  .lg-wrap { width: calc(100% - 24px); }
+  .lg-sheet { padding: 24px 18px; }
+}

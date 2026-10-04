@@ -1,0 +1,219 @@
+/* Idea 3 — written by the room. */
+.i3 {
+  --ic-ui: var(--i3-face);
+  font-family: var(--i3-face), ui-sans-serif, system-ui, sans-serif;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.i3 .ic-nav {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  width: min(1200px, calc(100% - 40px));
+  height: 76px;
+  margin-inline: auto;
+  font-size: 15.5px;
+}
+.i3 .ic-nav-mark { display: inline-flex; color: var(--ic-ink); }
+.i3 .ic-nav-links { display: flex; gap: 28px; }
+.i3 .ic-nav-links a { color: #4a4f55; text-decoration: none; transition: color 140ms; }
+.i3 .ic-nav-links a:hover { color: var(--ic-ink); }
+.i3 .ic-nav-cta {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid #dfe2e6;
+  color: var(--ic-ink);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 140ms, background 140ms;
+}
+.i3 .ic-nav-cta:hover { border-color: #b9bec4; background: #f7f8f9; }
+
+.i3-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(48px, 9vh, 112px) 20px 0;
+}
+
+.i3-title {
+  margin: 0;
+  font-size: clamp(38px, 6.6vw, 5.5rem);
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+.i3-line { display: block; }
+
+/* One phrase, one person: the text is revealed a character at a time behind
+   their caret, and the caret rides the reveal's leading edge. */
+.i3-seg {
+  position: relative;
+  display: inline-block;
+}
+.i3-txt {
+  display: inline-block;
+  animation: i3-type var(--t) steps(var(--n), end) var(--s) both;
+}
+.i3-caret {
+  position: absolute;
+  top: 0.1em;
+  bottom: 0.06em;
+  left: 0;
+  width: 3px;
+  margin-left: 1px;
+  border-radius: 2px;
+  background: var(--c);
+  opacity: 0;
+  animation:
+    i3-caret-ride var(--t) steps(var(--n), end) var(--s) both,
+    i3-caret-show calc(var(--t) + 900ms) linear var(--s) both;
+}
+.i3-seg.is-last .i3-caret {
+  animation:
+    i3-caret-ride var(--t) steps(var(--n), end) var(--s) both,
+    i3-caret-stay 1s steps(1) var(--s) 6 both,
+    i3-caret-out 400ms ease var(--s) both;
+  animation-delay: var(--s), var(--s), calc(var(--s) + var(--t) + 6s);
+}
+.i3-caret b {
+  position: absolute;
+  left: -1px;
+  bottom: 100%;
+  margin-bottom: 4px;
+  padding: 2px 6px;
+  border-radius: 4px 4px 4px 0;
+  background: var(--c);
+  color: var(--ct);
+  font-size: 12px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+@keyframes i3-type {
+  from { clip-path: inset(-0.3em 100% -0.3em 0); }
+  to { clip-path: inset(-0.3em -0.1em -0.3em 0); }
+}
+@keyframes i3-caret-ride {
+  from { left: 0; }
+  to { left: 100%; }
+}
+@keyframes i3-caret-show {
+  0% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes i3-caret-stay {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes i3-caret-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.i3-sub,
+.i3-cta {
+  animation: i3-rise 700ms cubic-bezier(0.16, 1, 0.3, 1) var(--s) both;
+}
+.i3-sub {
+  margin: 30px 0 0;
+  font-size: clamp(18px, 1.7vw, 22px);
+  color: #4a4f55;
+}
+.i3-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  height: 52px;
+  padding: 0 26px;
+  border-radius: 999px;
+  background: var(--ic-ink);
+  color: #fff;
+  font-size: 16.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 140ms;
+}
+.i3-cta:hover { background: #33373b; }
+.i3-cta svg { transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1); }
+.i3-cta:hover svg { transform: translateX(3px); }
+
+@keyframes i3-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.i3-floor {
+  position: relative;
+  width: min(1120px, 100%);
+  margin-top: auto;
+  padding-top: clamp(56px, 9vh, 96px);
+}
+.i3-floor .ic-characters {
+  max-height: 30vh;
+  width: auto;
+  max-width: 100%;
+  margin-inline: auto;
+}
+/* The overlay matches the image box exactly so heads can be placed in %. */
+.i3-heads {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  translate: -50% 0;
+  height: min(30vh, calc(min(1120px, 100vw - 40px) * 975 / 4161));
+  aspect-ratio: 4161 / 975;
+  pointer-events: none;
+}
+.i3-head {
+  position: absolute;
+  translate: 4px -100%;
+  animation: i3-pop 600ms cubic-bezier(0.16, 1, 0.3, 1) var(--d) both;
+}
+.i3-head .ic-cursor { position: relative; }
+.i3-ptr { animation: ic-idle 7s ease-in-out infinite; }
+.i3-head-design .i3-ptr { animation-delay: -2s; }
+.i3-head-eng .i3-ptr { animation-delay: -4s; }
+.i3-head-marketing .i3-ptr { animation-delay: -5.5s; }
+
+.i3-you {
+  display: inline-block;
+  will-change: transform;
+}
+.i3-you .ic-cursor-tag {
+  display: inline-block;
+  margin: 0;
+  border-radius: 9px;
+  transition: box-shadow 200ms;
+}
+.i3-you.is-live .ic-cursor-tag {
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.12), 0 10px 20px -8px rgb(0 0 0 / 0.3);
+}
+
+@keyframes i3-pop {
+  from { opacity: 0; transform: translateY(14px) scale(0.9); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 760px) {
+  .i3 .ic-nav-links { display: none; }
+  .i3-title { font-size: clamp(32px, 9.4vw, 44px); }
+  .i3-head-ai .ic-cursor-tag,
+  .i3-head-marketing .ic-cursor-tag,
+  .i3-head-analyst .ic-cursor-tag { display: none; }
+}
+@media (max-width: 760px) {
+  .i3-hero { padding-top: 48px; }
+  .i3-floor { margin-top: 0; padding-top: 72px; }
+}
