@@ -14,7 +14,6 @@
   margin: 0 0 18px;
   font: 500 12px/1 var(--i2-mono), ui-monospace, monospace;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: #80868d;
 }
 .tm-title {

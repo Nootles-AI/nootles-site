@@ -58,9 +58,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
       <SiteNav />
       <div className="i2-hero">
         <header className="lg-head">
-          <p className="lg-kicker">{doc.stamp}</p>
           <h1 className="lg-title">{doc.title}</h1>
-          <p className="lg-lede">{doc.lede}</p>
           <p className="lg-date">Effective {doc.effective}</p>
         </header>
       </div>
