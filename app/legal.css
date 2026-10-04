@@ -9,31 +9,20 @@
   text-align: center;
 }
 .lg-head > * { zoom: var(--airy); }
-.lg-kicker,
 .lg-date {
-  margin: 0;
+  margin: 24px 0 0;
   font: 500 12px/1 var(--i2-mono), ui-monospace, monospace;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: #80868d;
 }
 .lg-title {
-  margin: 18px 0 0;
+  margin: 0;
   font-size: clamp(40px, 5vw, 4.25rem);
   line-height: 1.04;
   font-weight: 700;
   letter-spacing: -0.04em;
   color: var(--ic-ink);
 }
-.lg-lede {
-  max-width: 54ch;
-  margin: 22px auto 0;
-  font-size: clamp(17px, 1.5vw, 19px);
-  line-height: 1.55;
-  color: var(--ink-2);
-  text-wrap: pretty;
-}
-.lg-date { margin-top: 24px; }
 
 /* The ground line, then the document on the grey: contents on the left that
    stay in view, the sheet on the right. Bottom room is for the cast, who
@@ -59,7 +48,6 @@
   margin: 4px 0 14px;
   font: 500 11.5px/1 var(--i2-mono), ui-monospace, monospace;
   letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: #80868d;
 }
 .lg-toc ol {

@@ -1534,10 +1534,8 @@
 }
 .i2-foot-col h2 {
   margin: 4px 0 14px;
-  font: 500 11.5px/1 var(--i2-mono), ui-monospace, monospace;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #80868d;
+  font: 700 16px/1.2 var(--i2-face), ui-sans-serif, system-ui, sans-serif;
+  color: var(--ic-ink);
 }
 .i2-foot-col ul {
   display: grid;
